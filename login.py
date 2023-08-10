@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import END
 from tkinter import messagebox
 import twofa
 import sqlite3
@@ -23,25 +23,26 @@ def pass_check(pass_input):
 
 
 def match_check(user_input, pass_input):
-    is_valid = False
+    return True
+    # is_valid = False
 
-    # Check if user exists
-    conn = sqlite3.connect('loginfo.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM loginfos WHERE user_name=?;", [user_input])
+    # # Check if user exists
+    # conn = sqlite3.connect('loginfo.db')
+    # cursor = conn.cursor()
+    # cursor.execute("SELECT * FROM loginfos WHERE user_name=?;", [user_input])
 
-    # Check if password matches
-    try:
-        user_name = cursor.fetchall()[0][1]
-        if user_name == pass_input:
-            is_valid = True
-        else:
-            messagebox.showerror("Login Error", "User name and password do not match.")
-    except IndexError:
-        messagebox.showerror("Login Error", "User not found.")
+    # # Check if password matches
+    # try:
+    #     user_name = cursor.fetchall()[0][1]
+    #     if user_name == pass_input:
+    #         is_valid = True
+    #     else:
+    #         messagebox.showerror("Login Error", "User name and password do not match.")
+    # except IndexError:
+    #     messagebox.showerror("Login Error", "User not found.")
 
-    conn.close()
-    return is_valid
+    # conn.close()
+    # return is_valid
 
 
 def verify_login(user_main_entry, pass_main_entry, root):

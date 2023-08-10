@@ -1,6 +1,6 @@
-from tkinter import *
+from tkinter import Toplevel, Frame, Label, Entry, Button, END
 from tkinter import messagebox
-from twilio.rest import Client
+# from twilio.rest import Client
 from random import randint
 import atm
 import sqlite3
@@ -29,14 +29,14 @@ def verify(code_entry, veri_code, root, twofa_win):
         twofa_win.deiconify()
 
 
-def send_message(veri_code, user_input):
-    client = Client('AC33a5bc5d1a8a65268a57422317da1658', '34c5ffe51d7114fc7fc5734f87cf334c')
-    client.messages \
-        .create(
-             body=f"Your verification code is {veri_code}",
-             from_='+12548480405',
-             to=find_phone(user_input)
-         )
+# def send_message(veri_code, user_input):
+#     client = Client('AC33a5bc5d1a8a65268a57422317da1658', '34c5ffe51d7114fc7fc5734f87cf334c')
+#     client.messages \
+#         .create(
+#              body=f"Your verification code is {veri_code}",
+#              from_='+12548480405',
+#              to=find_phone(user_input)
+#          )
 
 
 def twofa_window(user_input, root):

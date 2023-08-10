@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk, Frame, Label, Entry, Button, W
 import register
 import login
 
