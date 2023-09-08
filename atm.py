@@ -1,13 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 
-# Initialize font variables
-boldMainFont = ('Source Code Pro', 14, 'bold')
-mainFont = ('Source Code Pro', 14)
-sMainFont = ('Source Code Pro', 9)
-boldMainFont2 = ('Source Code Pro', 12, 'bold')
-mainFont2 = ('Source Code Pro', 12)
-sMainFont2 = ('Source Code Pro', 8)
+import fonts
 
 
 def done_to_main(widget_list, window_set, done_win):
@@ -73,11 +67,11 @@ def open_done_screen(amount_input, widget_list, window_set):
     frame2.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
     # Initialize done screen widgets
-    window_label = Label(frame2, text="Withdraw Successful", bg='black', fg='white', font=('Source Code Pro', 20, 'bold'))
+    window_label = Label(frame2, text="Withdraw Successful", bg='black', fg='white', font=fonts.bigFontBold)
     window_desc = Label(frame2, text="Successfully withdrawn an amount of:", bg='black', fg='#bababa', font=sMainFont2)
-    wdraw_amt_label = Label(frame2, text=f"₱{amount_input:,}", bg='black', fg='white', font=('Source Code Pro', 20, 'bold'))
-    new_button = Button(frame2, text="New Transaction", font=boldMainFont)
-    exit_button = Button(frame2, text="Exit Transaction", font=boldMainFont)
+    wdraw_amt_label = Label(frame2, text=f"₱{amount_input:,}", bg='black', fg='white', font=fonts.bigFontBold)
+    new_button = Button(frame2, text="New Transaction", font=fonts.boldMainFont)
+    exit_button = Button(frame2, text="Exit Transaction", font=fonts.boldMainFont)
 
     # Configure withdraw and done buttons
     new_button.config(command=lambda: done_to_main(widget_list, window_set, done_win))
@@ -107,11 +101,11 @@ def open_withdraw_screen(window_set):
     frame1 = window_set[0]
 
     # Initialize withdraw widgets
-    window_label = Label(frame1, text="Withdraw", bg='black', fg='white', font=('Source Code Pro', 24, 'bold'))
-    window_desc = Label(frame1, text="Enter withdraw amount:", bg='black', fg='#bababa', font=mainFont)
-    wdraw_entry = Entry(frame1, font=('Source Code Pro', 50, 'bold'))
-    wdraw_button = Button(frame1, text="Withdraw", font=boldMainFont)
-    back_button = Button(frame1, text="Back", font=boldMainFont)
+    window_label = Label(frame1, text="Withdraw", bg='black', fg='white', font=fonts.biggerFontBold)
+    window_desc = Label(frame1, text="Enter withdraw amount:", bg='black', fg='#bababa', font=fonts.mainFont)
+    wdraw_entry = Entry(frame1, font=fonts.biggestFontBold)
+    wdraw_button = Button(frame1, text="Withdraw", font=fonts.boldMainFont)
+    back_button = Button(frame1, text="Back", font=fonts.boldMainFont)
 
     # Config wdraw and back buttons
     widget_list = (window_label, window_desc, wdraw_entry, wdraw_button, back_button)
@@ -132,10 +126,10 @@ def open_main_screen(window_set):
     windows = window_set[1:]
 
     # Initialize ATM widgets
-    window_label = Label(frame1, text="ATM System", bg='black', fg='white', font=('Source Code Pro', 24, 'bold'))
-    window_desc = Label(frame1, text="Choose your transaction.", bg='black', fg='#bababa', font=mainFont)
-    wdraw_button = Button(frame1, text="Withdraw", font=boldMainFont)
-    exit_button = Button(frame1, text="Exit", font=boldMainFont)
+    window_label = Label(frame1, text="ATM System", bg='black', fg='white', font=fonts.biggerFontBold)
+    window_desc = Label(frame1, text="Choose your transaction.", bg='black', fg='#bababa', font=fonts.mainFont)
+    wdraw_button = Button(frame1, text="Withdraw", font=fonts.boldMainFont)
+    exit_button = Button(frame1, text="Exit", font=fonts.boldMainFont)
 
     # Configure buttons
     widget_list = (window_label, window_desc, wdraw_button, exit_button)

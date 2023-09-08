@@ -1,6 +1,9 @@
 from tkinter import Tk, Frame, Label, Entry, Button, W
+
+import fonts
 import register
 import login
+
 
 # Initialize window
 root = Tk()
@@ -15,22 +18,17 @@ root_pos_right = int(root.winfo_screenwidth()/2 - root_x/2)
 root_pos_down = int(root.winfo_screenheight()/2 - root_y/2)
 root.geometry(f'{root_x}x{root_y}+{root_pos_right}+{root_pos_down}')
 
-# Initialize font variables
-boldMainFont = ('Source Code Pro', 14, 'bold')
-mainFont = ('Source Code Pro', 14)
-sMainFont = ('Source Code Pro', 9)
-
 # Initialize widgets
 frame1 = Frame(root, bg="black")
 frame1.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
-window_label = Label(frame1, text="ATM System Login", bg='black', fg='white', font=('Source Code Pro', 24, 'bold'))
-user_label = Label(frame1, text="User Name: ", bg='black', fg='white', anchor=W, font=boldMainFont)
-pass_label = Label(frame1, text="Password: ", bg='black', fg='white', anchor=W, font=boldMainFont)
-register_label = Label(frame1, text="Don't have an account?", bg='black', fg='#bababa', font=sMainFont)
-user_main_entry = Entry(frame1, font=mainFont)
-pass_main_entry = Entry(frame1, font=mainFont)
-login_button = Button(frame1, text="Login", font=boldMainFont)
-register_button = Button(frame1, text="Register", font=boldMainFont, command=register.reg_window)
+window_label = Label(frame1, text="ATM System Login", bg='black', fg='white', font=fonts.biggerFontBold)
+user_label = Label(frame1, text="User Name: ", bg='black', fg='white', anchor=W, font=fonts.boldMainFont)
+pass_label = Label(frame1, text="Password: ", bg='black', fg='white', anchor=W, font=fonts.boldMainFont)
+register_label = Label(frame1, text="Don't have an account?", bg='black', fg='#bababa', font=fonts.sMainFont)
+user_main_entry = Entry(frame1, font=fonts.mainFont)
+pass_main_entry = Entry(frame1, font=fonts.mainFont)
+login_button = Button(frame1, text="Login", font=fonts.boldMainFont)
+register_button = Button(frame1, text="Register", font=fonts.boldMainFont, command=register.reg_window)
 # Configure login button
 login_button.config(command=lambda: login.verify_login(user_main_entry, pass_main_entry, root))
 

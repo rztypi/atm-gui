@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 import sqlite3
 
+import fonts
+
 
 def user_check(user_input, reg_win):
     is_valid = False
@@ -91,11 +93,6 @@ def register(user_input, pass_input, phone_input, reg_win):
 
 
 def reg_window():
-    # Initialize font variables
-    boldMainFont = ('Source Code Pro', 12, 'bold')
-    mainFont = ('Source Code Pro', 12)
-    sMainFont = ('Source Code Pro', 8)
-
     # Initialize registration window
     reg_win = Toplevel()
     reg_win.title("Registration")
@@ -112,16 +109,16 @@ def reg_window():
     # Initialize registration window widgets
     frame1 = Frame(reg_win, bg='black')
     frame1.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
-    window_label = Label(frame1, text="Registration Form", bg='black', fg='white', font=('Source Code Pro', 20, 'bold'))
-    user_label = Label(frame1, text="User Name: ", bg='black', fg='white', anchor=W, font=boldMainFont)
-    pass_label = Label(frame1, text="Password: ", bg='black', fg='white', anchor=W, font=boldMainFont)
-    phone_label = Label(frame1, text="Phone Number: ", bg='black', fg='white', anchor=W, font=boldMainFont)
-    user_reg_entry = Entry(frame1, font=mainFont)
-    pass_reg_entry = Entry(frame1, font=mainFont)
-    phone_reg_entry = Entry(frame1, font=mainFont)
-    phone_ghostlabel = Label(frame1, text="Format: +63**********", bg='black', fg='#bababa', anchor=W, font=sMainFont)
+    window_label = Label(frame1, text="Registration Form", bg='black', fg='white', font=fonts.bigFontBold)
+    user_label = Label(frame1, text="User Name: ", bg='black', fg='white', anchor=W, font=fonts.boldMainFont2)
+    pass_label = Label(frame1, text="Password: ", bg='black', fg='white', anchor=W, font=fonts.boldMainFont2)
+    phone_label = Label(frame1, text="Phone Number: ", bg='black', fg='white', anchor=W, font=fonts.boldMainFont2)
+    user_reg_entry = Entry(frame1, font=fonts.mainFont2)
+    pass_reg_entry = Entry(frame1, font=fonts.mainFont2)
+    phone_reg_entry = Entry(frame1, font=fonts.mainFont2)
+    phone_ghostlabel = Label(frame1, text="Format: +63**********", bg='black', fg='#bababa', anchor=W, font=fonts.sMainFont2)
     register_param = lambda: register(user_reg_entry.get(), pass_reg_entry.get(), phone_reg_entry.get(), reg_win)
-    register_button = Button(frame1, text="Register", font=boldMainFont, command=register_param)
+    register_button = Button(frame1, text="Register", font=fonts.boldMainFont2, command=register_param)
 
     # Place registration window widgets
     window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
