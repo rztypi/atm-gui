@@ -5,6 +5,12 @@ import login
 import register
 
 
+class WidgetMethods:
+    @staticmethod
+    def clear_entry_field(field):
+        field.delete(0, tk.END)
+
+
 class LoginFrame(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg='black')
@@ -34,9 +40,28 @@ class LoginFrame(tk.Frame):
 
         register_button = tk.Button(self, text='Register', font=fonts.boldMainFont, command=register.reg_window)
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
+
+    def authenticate(self, user_entry, pass_entry, controller):
+        username = user_entry.get()
+        password = pass_entry.get()
+
+        WidgetMethods.clear_entry_field(user_entry)
+        WidgetMethods.clear_entry_field(pass_entry)
+
+        if self.user_check(username) and self.pass_check(password):
+            controller.show_frame(ATMFrame)
+
+    def user_check(self, username):
+        if not username:
+            tk.messagebox.showerror('Login Error', 'You cannot leave your username blank.')
+            return False
+        return True
     
-    def authenticate(self, username, password, root):
-        login.verify_login(username, password, root)
+    def pass_check(self, password):
+        if not password:
+            tk.messagebox.showerror('Login Error', 'You cannot leave your password blank.')
+            return False
+        return True
 
 class ATMFrame(tk.Frame):
     def __init__(self, parent, controller):
