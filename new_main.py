@@ -5,14 +5,31 @@ import login
 import register
 
 
-class WidgetMethods:
-    @staticmethod
-    def clear_entry_field(field):
-        field.delete(0, tk.END)
+class Login:
+    def authenticate(self, user_entry, pass_entry, app):
+        username = user_entry.get()
+        password = pass_entry.get()
 
+        # WidgetMethods.clear_entry_field(user_entry)
+        # WidgetMethods.clear_entry_field(pass_entry)
 
-class LoginFrame(tk.Frame):
-    def __init__(self, parent, controller):
+        if self.__user_check(username) and self.__pass_check(password):
+            app.show_frame(ATMFrame)
+
+    def __user_check(self, username):
+        if not username:
+            tk.messagebox.showerror('Login Error', 'You cannot leave your username blank.')
+            return False
+        return True
+    
+    def __pass_check(self, password):
+        if not password:
+            tk.messagebox.showerror('Login Error', 'You cannot leave your password blank.')
+            return False
+        return True
+
+class LoginFrame(tk.Frame, Login):
+    def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg='black')
         self.place(relheight=1, relwidth=1)
 
@@ -32,7 +49,7 @@ class LoginFrame(tk.Frame):
         pass_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
 
         login_button = tk.Button(self, text='Login', font=fonts.boldMainFont)
-        login_button.config(command=lambda: self.authenticate(user_entry, pass_entry, controller))
+        login_button.config(command=lambda: self.authenticate(user_entry, pass_entry, app))
         login_button.place(relx=0.4, rely=0.47, relheight=0.08, relwidth=0.2)
 
         register_label = tk.Label(self, text="Don't have an account?", bg='black', fg='#bababa', font=fonts.sMainFont)
@@ -41,30 +58,10 @@ class LoginFrame(tk.Frame):
         register_button = tk.Button(self, text='Register', font=fonts.boldMainFont, command=register.reg_window)
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
-    def authenticate(self, user_entry, pass_entry, controller):
-        username = user_entry.get()
-        password = pass_entry.get()
 
-        WidgetMethods.clear_entry_field(user_entry)
-        WidgetMethods.clear_entry_field(pass_entry)
-
-        if self.user_check(username) and self.pass_check(password):
-            controller.show_frame(ATMFrame)
-
-    def user_check(self, username):
-        if not username:
-            tk.messagebox.showerror('Login Error', 'You cannot leave your username blank.')
-            return False
-        return True
-    
-    def pass_check(self, password):
-        if not password:
-            tk.messagebox.showerror('Login Error', 'You cannot leave your password blank.')
-            return False
-        return True
 
 class ATMFrame(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg='black')
         self.place(relheight=1, relwidth=1)
         window_label = tk.Label(self, text='ATM WINDOW', bg='black', fg='white', font=fonts.biggerFontBold)
@@ -88,7 +85,6 @@ class App(tk.Tk):
 
         self.frames = {}
         for F in (LoginFrame, ATMFrame):
-            print(F)
             frame = F(container, self)
             self.frames[F] = frame
         
@@ -97,7 +93,6 @@ class App(tk.Tk):
     def show_frame(self, frame_name):
         frame = self.frames[frame_name]
         frame.tkraise()
-
 
 if __name__ == '__main__':
     app = App()
