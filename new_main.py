@@ -2,7 +2,7 @@ import tkinter as tk
 from random import randint
 
 import fonts
-import login
+import colors
 import register
 
 
@@ -101,16 +101,16 @@ class Login:
 
 class LoginFrame(tk.Frame, Login):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg='black')
-        self.place(relheight=1, relwidth=1)
+        tk.Frame.__init__(self, parent, bg=colors.primary)
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
-        window_label = tk.Label(self, text='ATM System Login', bg='black', fg='white', font=fonts.biggerFontBold)
+        window_label = tk.Label(self, text='ATM System Login', bg=colors.primary, fg=colors.font_primary, font=fonts.biggerFontBold)
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
 
-        user_label = tk.Label(self, text='User Name: ', bg='black', fg='white', anchor=tk.W, font=fonts.boldMainFont)
+        user_label = tk.Label(self, text='User Name: ', bg=colors.primary, fg=colors.font_primary, anchor=tk.W, font=fonts.boldMainFont)
         user_label.place(relx=0.02, rely=0.18, relheight=0.05, relwidth=0.3)
 
-        pass_label = tk.Label(self, text='Password: ', bg='black', fg='white', anchor=tk.W, font=fonts.boldMainFont)
+        pass_label = tk.Label(self, text='Password: ', bg=colors.primary, fg=colors.font_primary, anchor=tk.W, font=fonts.boldMainFont)
         pass_label.place(relx=0.02, rely=0.31, relheight=0.05, relwidth=0.3)
         
         user_entry = tk.Entry(self, font=fonts.mainFont)
@@ -123,7 +123,7 @@ class LoginFrame(tk.Frame, Login):
         login_button.config(command=lambda: self.authenticate_login(user_entry, pass_entry, app))
         login_button.place(relx=0.4, rely=0.47, relheight=0.08, relwidth=0.2)
 
-        register_label = tk.Label(self, text="Don't have an account?", bg='black', fg='#bababa', font=fonts.sMainFont)
+        register_label = tk.Label(self, text="Don't have an account?", bg=colors.primary, fg='#bababa', font=fonts.sMainFont)
         register_label.place(relx=0.1, rely=0.82, relheight=0.02, relwidth=0.8)
 
         register_button = tk.Button(self, text='Register', font=fonts.boldMainFont, command=register.reg_window)
@@ -133,9 +133,44 @@ class LoginFrame(tk.Frame, Login):
 class HomeFrame(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg='black')
-        self.place(relheight=1, relwidth=1)
-        window_label = tk.Label(self, text='ATM Window', bg='black', fg='white', font=fonts.biggerFontBold)
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+
+        window_label = tk.Label(self, text='ATM System', bg='black', fg='white', font=fonts.biggerFontBold)
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        window_desc = tk.Label(self, text="Choose your transaction.", bg='black', fg='#bababa', font=fonts.mainFont)
+        window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
+
+        withdraw_button = tk.Button(self, text="Withdraw", font=fonts.boldMainFont)
+        withdraw_button.config(command=lambda: app.show_frame(WithdrawFrame))
+        withdraw_button.place(relx=0.3, rely=0.55, relheight=0.08, relwidth=0.4)
+
+        exit_button = tk.Button(self, text="Exit", font=fonts.boldMainFont)
+        exit_button.config(command=lambda: app.show_frame(LoginFrame))
+        exit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
+
+
+class WithdrawFrame(tk.Frame):
+    def __init__(self, parent, app):
+        tk.Frame.__init__(self, parent, bg='black')
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+
+        window_label = tk.Label(self, text='Withdraw', bg='black', fg='white', font=fonts.biggerFontBold)
+        window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        window_desc = tk.Label(self, text='Enter withdraw amount:', bg='black', fg='#bababa', font=fonts.mainFont)
+        window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
+
+        withdraw_entry = tk.Entry(self, font=fonts.biggestFontBold)
+        withdraw_entry.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
+
+        withdraw_button = tk.Button(self, text='Withdraw', font=fonts.boldMainFont)
+        withdraw_button.config(command=lambda: print("WITHDRAW!"))
+        withdraw_button.place(relx=0.4, rely=0.65, relheight=0.08, relwidth=0.2)
+
+        back_button = tk.Button(self, text='Back', font=fonts.boldMainFont)
+        back_button.config(command=lambda: app.show_frame(HomeFrame))
+        back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
 
 
 class App(tk.Tk):
@@ -147,11 +182,11 @@ class App(tk.Tk):
 
         WidgetMethods.set_window_geometry(self, width=720, height=720)
 
-        container = tk.Frame(self)
-        container.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+        container = tk.Frame(self, bg=colors.secondary)
+        container.place(relwidth=1, relheight=1)
 
         self.frames = {}
-        for F in (LoginFrame, HomeFrame):
+        for F in (LoginFrame, HomeFrame, WithdrawFrame):
             frame = F(container, self)
             self.frames[F] = frame
         
