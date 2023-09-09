@@ -24,7 +24,7 @@ class WidgetMethods:
 class TwoFA:
     def __open_atm_system(self, app):
         self.destroy()
-        app.show_frame(ATMFrame)
+        app.show_frame(HomeFrame)
         
     def generate_pin(self):
         def random_digit():
@@ -130,11 +130,11 @@ class LoginFrame(tk.Frame, Login):
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
 
-class ATMFrame(tk.Frame):
+class HomeFrame(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg='black')
         self.place(relheight=1, relwidth=1)
-        window_label = tk.Label(self, text='ATM WINDOW', bg='black', fg='white', font=fonts.biggerFontBold)
+        window_label = tk.Label(self, text='ATM Window', bg='black', fg='white', font=fonts.biggerFontBold)
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
 
 
@@ -151,7 +151,7 @@ class App(tk.Tk):
         container.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         self.frames = {}
-        for F in (LoginFrame, ATMFrame):
+        for F in (LoginFrame, HomeFrame):
             frame = F(container, self)
             self.frames[F] = frame
         
