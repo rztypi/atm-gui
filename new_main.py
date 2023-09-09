@@ -35,9 +35,13 @@ class TwoFA:
 
     def authenticate_twofa(self, code_entry, pin, app):
         code = code_entry.get()
-        WidgetMethods.clear_entry_field(code_entry)
         if code == pin:
             self.__open_atm_system(app)
+        else:
+            tk.messagebox.showerror('Verification Error', 'Code does not match.')
+            WidgetMethods.clear_entry_field(code_entry)
+            self.deiconify()
+
 
 class TwoFAToplevel(tk.Toplevel, TwoFA):
     def __init__(self, app):
@@ -65,6 +69,7 @@ class TwoFAToplevel(tk.Toplevel, TwoFA):
 
         verify_button = tk.Button(frame, text="Verify", font=fonts.boldMainFont, command=lambda: self.authenticate_twofa(code_entry, pin, app))
         verify_button.place(relx=0.3, rely=0.75, relheight=0.1, relwidth=0.4)
+
 
 class Login:
     def __user_check(self, username):
