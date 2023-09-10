@@ -23,12 +23,30 @@ class WidgetMethods:
         entry_field.delete(0, tk.END)
 
 
-class WithdrawCompleteToplevel(tk.Toplevel):
-    def __init__(self, app):
-        tk.Toplevel.__init__(self)
-        self.title("okay")
+class WithdrawCompleteFrame(tk.Frame):
+    def __init__(self, parent, app):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
-        WidgetMethods.set_window_geometry(self, width=400, height=400)
+        window_label = tk.Label(
+            self, text="Cash Withdrawal", bg="black", fg="white", font=fonts.biggerFontBold
+        )
+        window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        window_desc = tk.Label(
+            self,
+            text="You have successfully withdrawn:",
+            bg="black",
+            fg="#bababa",
+            font=fonts.mainFont,
+        )
+        window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
+
+        # withdraw_amount = app.get_last_withdraw_amount()
+        withdraw_amount = 5
+
+        withdraw_amount_label = tk.Label(self, text=f"₱{withdraw_amount}", bg="black", fg="#bababa", font=fonts.sMainFont2)
+        withdraw_amount_label.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
 
 
 class WithdrawFrame(tk.Frame):
@@ -37,7 +55,7 @@ class WithdrawFrame(tk.Frame):
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
-            self, text="Withdraw", bg="black", fg="white", font=fonts.biggerFontBold
+            self, text="Cash Withdrawal", bg="black", fg="white", font=fonts.biggerFontBold
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
 
@@ -50,16 +68,25 @@ class WithdrawFrame(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        withdraw_entry = tk.Entry(self, font=fonts.biggestFontBold)
+        vcmd = (self.register(self.__on_validate), "%S")
+        withdraw_entry = tk.Entry(self, validate="key", validatecommand=vcmd, font=fonts.biggestFontBold)
         withdraw_entry.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
 
         withdraw_button = tk.Button(self, text="Withdraw", font=fonts.boldMainFont)
-        withdraw_button.config(command=lambda: print("WITHDRAW!"))
+        withdraw_button.config(command=lambda: self.withdraw_button_handler(withdraw_entry, app))
         withdraw_button.place(relx=0.4, rely=0.65, relheight=0.08, relwidth=0.2)
 
         back_button = tk.Button(self, text="Back", font=fonts.boldMainFont)
         back_button.config(command=lambda: app.show_frame(HomeFrame))
         back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
+    
+    def withdraw_button_handler(self, withdraw_entry, app):
+        withdraw_amount = withdraw_entry.get()
+
+        app.show_frame(WithdrawCompleteFrame)
+    
+    def __on_validate(self, c):
+        return c.isdigit()
 
 
 class HomeFrame(tk.Frame):
@@ -106,8 +133,8 @@ class TwoFAToplevel(tk.Toplevel):
         self["background"] = "white"
         WidgetMethods.set_window_geometry(self, x=400, y=400)
 
-        pin = app.generate_twofa_pin()
-        print(pin)
+        app.generate_twofa_pin()
+        print(app.get_twofa_pin())
 
         frame = tk.Frame(self, bg="black")
         frame.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -123,7 +150,8 @@ class TwoFAToplevel(tk.Toplevel):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        code_entry = tk.Entry(frame, font=("Source Code Pro", 79, "bold"))
+        vcmd = (self.register(self.__on_validate), "%d", "%s", "%S")
+        code_entry = tk.Entry(frame, validate="key", validatecommand=vcmd, font=("Source Code Pro", 79, "bold"))
         code_entry.place(relx=0.1, rely=0.4, relheight=0.25, relwidth=0.8)
 
         verify_button = tk.Button(
@@ -134,15 +162,10 @@ class TwoFAToplevel(tk.Toplevel):
         )
         verify_button.place(relx=0.3, rely=0.75, relheight=0.1, relwidth=0.4)
 
-    def __open_atm_system(self, app):
-        self.destroy()
-
-        app.show_frame(HomeFrame)
-
     def authenticate_twofa(self, code_entry, app):
         code = code_entry.get()
 
-        if code == app.twofa_pin:
+        if code == app.get_twofa_pin():
             self.__open_atm_system(app)
         else:
             tk.messagebox.showerror("Verification Error", "Code does not match.")
@@ -151,6 +174,19 @@ class TwoFAToplevel(tk.Toplevel):
 
             self.deiconify()
 
+    def __open_atm_system(self, app):
+        self.destroy()
+
+        app.show_frame(HomeFrame)
+
+    def __on_validate(self, action, entry, character):
+        action_is_delete = action == "0"
+        char_isdigit = character.isdigit()
+        entry_under_limit = len(entry) < 4
+        
+        if action_is_delete or (char_isdigit and entry_under_limit):
+            return True
+        return False
 
 class LoginFrame(tk.Frame):
     def __init__(self, parent, app):
@@ -189,7 +225,7 @@ class LoginFrame(tk.Frame):
         user_entry = tk.Entry(self, font=fonts.mainFont)
         user_entry.place(relx=0.1, rely=0.24, relheight=0.05, relwidth=0.8)
 
-        pass_entry = tk.Entry(self, font=fonts.mainFont)
+        pass_entry = tk.Entry(self, show="*", font=fonts.mainFont)
         pass_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
 
         login_button = tk.Button(
@@ -214,6 +250,16 @@ class LoginFrame(tk.Frame):
         )
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
+    def authenticate_login(self, user_entry, pass_entry, app):
+        username = user_entry.get()
+        password = pass_entry.get()
+
+        WidgetMethods.clear_entry_field(user_entry)
+        WidgetMethods.clear_entry_field(pass_entry)
+
+        if self.__user_check(username) and self.__pass_check(password):
+            self.__open_twofa_window(app)
+
     def __user_check(self, username):
         if not username:
             tk.messagebox.showerror(
@@ -231,18 +277,7 @@ class LoginFrame(tk.Frame):
         return True
 
     def __open_twofa_window(self, app):
-        twofa_window = TwoFAToplevel(app)
-        twofa_window.deiconify()
-
-    def authenticate_login(self, user_entry, pass_entry, app):
-        username = user_entry.get()
-        password = pass_entry.get()
-
-        WidgetMethods.clear_entry_field(user_entry)
-        WidgetMethods.clear_entry_field(pass_entry)
-
-        if self.__user_check(username) and self.__pass_check(password):
-            self.__open_twofa_window(app)
+        TwoFAToplevel(app)
 
 
 class App(tk.Tk):
@@ -256,27 +291,27 @@ class App(tk.Tk):
         container = tk.Frame(self, bg=colors.secondary)
         container.place(relwidth=1, relheight=1)
 
-        self.frames = {}
-        for F in (LoginFrame, HomeFrame, WithdrawFrame):
+        self.__frames = {}
+        for F in (LoginFrame, HomeFrame, WithdrawFrame, WithdrawCompleteFrame):
             frame = F(container, self)
-            self.frames[F] = frame
+            self.__frames[F] = frame
 
         self.show_frame(LoginFrame)
 
     def show_frame(self, cls):
-        frame = self.frames[cls]
+        frame = self.__frames[cls]
         frame.tkraise()
     
-    twofa_pin = ""
     def generate_twofa_pin(self):
         def random_digit():
             return randint(0, 9)
 
         pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
 
-        self.twofa_pin = pin
-
-        return pin
+        self.__twofa_pin = pin
+    
+    def get_twofa_pin(self):
+        return self.__twofa_pin
 
 
 if __name__ == "__main__":
