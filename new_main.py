@@ -116,7 +116,6 @@ class TwoFAToplevel(tk.Toplevel, TwoFA):
     def __init__(self, app):
         tk.Toplevel.__init__(self)
         self.title("Two-Factor Authentication")
-        self.iconbitmap("wwticon.ico")
         self["background"] = "white"
         WidgetMethods.set_window_geometry(self, x=400, y=400)
 
@@ -247,7 +246,6 @@ class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.title("ATM System")
-        self.tk.call("wm", "iconphoto", self._w, tk.PhotoImage(file="wwticon.ico"))
         self["background"] = "white"
 
         WidgetMethods.set_window_geometry(self, x=720, y=720)
