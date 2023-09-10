@@ -3,7 +3,6 @@ from random import randint
 
 import fonts
 import colors
-import register
 
 
 SKIP_TWOFA = True
@@ -294,7 +293,7 @@ class LoginFrame(tk.Frame):
         register_label.place(relx=0.1, rely=0.82, relheight=0.02, relwidth=0.8)
 
         register_button = tk.Button(
-            self, text="Register", font=fonts.boldMainFont, command=register.reg_window
+            self, text="Register", font=fonts.boldMainFont, command=self.bell
         )
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
