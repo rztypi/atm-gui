@@ -81,38 +81,25 @@ class HomeFrame(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        withdraw_button = tk.Button(self, text="Withdraw", font=fonts.boldMainFont)
-        withdraw_button.config(command=lambda: app.show_frame(WithdrawFrame))
+        withdraw_button = tk.Button(
+            self,
+            text="Withdraw",
+            font=fonts.boldMainFont,
+            command=lambda: app.show_frame(WithdrawFrame),
+        )
         withdraw_button.place(relx=0.3, rely=0.55, relheight=0.08, relwidth=0.4)
 
-        exit_button = tk.Button(self, text="Exit", font=fonts.boldMainFont)
+        exit_button = tk.Button(
+            self,
+            text="Exit",
+            font=fonts.boldMainFont,
+            command=lambda: app.show_frame(LoginFrame),
+        )
         exit_button.config(command=lambda: app.show_frame(LoginFrame))
         exit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
 
 
-class TwoFA:
-    def __open_atm_system(self, app):
-        self.destroy()
-        app.show_frame(HomeFrame)
-
-    def generate_pin(self):
-        def random_digit():
-            return randint(0, 9)
-
-        pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
-        return pin
-
-    def authenticate_twofa(self, code_entry, pin, app):
-        code = code_entry.get()
-        if code == pin:
-            self.__open_atm_system(app)
-        else:
-            tk.messagebox.showerror("Verification Error", "Code does not match.")
-            WidgetMethods.clear_entry_field(code_entry)
-            self.deiconify()
-
-
-class TwoFAToplevel(tk.Toplevel, TwoFA):
+class TwoFAToplevel(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self)
         self.title("Two-Factor Authentication")
@@ -147,39 +134,31 @@ class TwoFAToplevel(tk.Toplevel, TwoFA):
         )
         verify_button.place(relx=0.3, rely=0.75, relheight=0.1, relwidth=0.4)
 
+    def __open_atm_system(self, app):
+        self.destroy()
 
-class Login:
-    def __user_check(self, username):
-        if not username:
-            tk.messagebox.showerror(
-                "Login Error", "You cannot leave your username blank."
-            )
-            return False
-        return True
+        app.show_frame(HomeFrame)
 
-    def __pass_check(self, password):
-        if not password:
-            tk.messagebox.showerror(
-                "Login Error", "You cannot leave your password blank."
-            )
-            return False
-        return True
+    def generate_pin(self):
+        def random_digit():
+            return randint(0, 9)
 
-    def __open_twofa_window(self, app):
-        twofa_window = TwoFAToplevel(app)
+        pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
 
-    def authenticate_login(self, user_entry, pass_entry, app):
-        username = user_entry.get()
-        password = pass_entry.get()
+        return pin
 
-        WidgetMethods.clear_entry_field(user_entry)
-        WidgetMethods.clear_entry_field(pass_entry)
+    def authenticate_twofa(self, code_entry, pin, app):
+        code = code_entry.get()
 
-        if self.__user_check(username) and self.__pass_check(password):
-            self.__open_twofa_window(app)
+        if code == pin:
+            self.__open_atm_system(app)
+        else:
+            tk.messagebox.showerror("Verification Error", "Code does not match.")
+            WidgetMethods.clear_entry_field(code_entry)
+            self.deiconify()
 
 
-class LoginFrame(tk.Frame, Login):
+class LoginFrame(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -241,6 +220,36 @@ class LoginFrame(tk.Frame, Login):
         )
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
+    def __user_check(self, username):
+        if not username:
+            tk.messagebox.showerror(
+                "Login Error", "You cannot leave your username blank."
+            )
+            return False
+        return True
+
+    def __pass_check(self, password):
+        if not password:
+            tk.messagebox.showerror(
+                "Login Error", "You cannot leave your password blank."
+            )
+            return False
+        return True
+
+    def __open_twofa_window(self, app):
+        twofa_window = TwoFAToplevel(app)
+        twofa_window.deiconify()
+
+    def authenticate_login(self, user_entry, pass_entry, app):
+        username = user_entry.get()
+        password = pass_entry.get()
+
+        WidgetMethods.clear_entry_field(user_entry)
+        WidgetMethods.clear_entry_field(pass_entry)
+
+        if self.__user_check(username) and self.__pass_check(password):
+            self.__open_twofa_window(app)
+
 
 class App(tk.Tk):
     def __init__(self):
@@ -268,9 +277,3 @@ class App(tk.Tk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-
-"""
-To do:
-    - add withdraw done screen
-    - improve colors
-"""
