@@ -151,26 +151,26 @@ class TwoFAToplevel(tk.Toplevel):
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
         vcmd = (self.register(self.__on_validate), "%d", "%s", "%S")
-        code_entry = tk.Entry(frame, validate="key", validatecommand=vcmd, font=("Source Code Pro", 79, "bold"))
-        code_entry.place(relx=0.1, rely=0.4, relheight=0.25, relwidth=0.8)
+        pin_entry = tk.Entry(frame, validate="key", validatecommand=vcmd, font=("Source Code Pro", 79, "bold"))
+        pin_entry.place(relx=0.1, rely=0.4, relheight=0.25, relwidth=0.8)
 
         verify_button = tk.Button(
             frame,
             text="Verify",
             font=fonts.boldMainFont,
-            command=lambda: self.authenticate_twofa(code_entry, app),
+            command=lambda: self.authenticate_twofa(pin_entry, app),
         )
         verify_button.place(relx=0.3, rely=0.75, relheight=0.1, relwidth=0.4)
 
-    def authenticate_twofa(self, code_entry, app):
-        code = code_entry.get()
+    def authenticate_twofa(self, pin_entry, app):
+        pin = pin_entry.get()
 
-        if code == app.get_twofa_pin():
+        if pin == app.get_twofa_pin():
             self.__open_atm_system(app)
         else:
-            tk.messagebox.showerror("Verification Error", "Code does not match.")
+            tk.messagebox.showerror("Verification Error", "PIN does not match.")
 
-            WidgetMethods.clear_entry_field(code_entry)
+            WidgetMethods.clear_entry_field(pin_entry)
 
             self.deiconify()
 
@@ -183,7 +183,7 @@ class TwoFAToplevel(tk.Toplevel):
         action_is_delete = action == "0"
         char_isdigit = character.isdigit()
         entry_under_limit = len(entry) < 4
-        
+
         if action_is_delete or (char_isdigit and entry_under_limit):
             return True
         return False
