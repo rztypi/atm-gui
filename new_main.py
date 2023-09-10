@@ -106,7 +106,7 @@ class TwoFAToplevel(tk.Toplevel):
         self["background"] = "white"
         WidgetMethods.set_window_geometry(self, x=400, y=400)
 
-        pin = self.generate_pin()
+        pin = app.generate_twofa_pin()
         print(pin)
 
         frame = tk.Frame(self, bg="black")
@@ -130,7 +130,7 @@ class TwoFAToplevel(tk.Toplevel):
             frame,
             text="Verify",
             font=fonts.boldMainFont,
-            command=lambda: self.authenticate_twofa(code_entry, pin, app),
+            command=lambda: self.authenticate_twofa(code_entry, app),
         )
         verify_button.place(relx=0.3, rely=0.75, relheight=0.1, relwidth=0.4)
 
@@ -139,22 +139,16 @@ class TwoFAToplevel(tk.Toplevel):
 
         app.show_frame(HomeFrame)
 
-    def generate_pin(self):
-        def random_digit():
-            return randint(0, 9)
-
-        pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
-
-        return pin
-
-    def authenticate_twofa(self, code_entry, pin, app):
+    def authenticate_twofa(self, code_entry, app):
         code = code_entry.get()
 
-        if code == pin:
+        if code == app.twofa_pin:
             self.__open_atm_system(app)
         else:
             tk.messagebox.showerror("Verification Error", "Code does not match.")
+
             WidgetMethods.clear_entry_field(code_entry)
+
             self.deiconify()
 
 
@@ -272,6 +266,17 @@ class App(tk.Tk):
     def show_frame(self, cls):
         frame = self.frames[cls]
         frame.tkraise()
+    
+    twofa_pin = ""
+    def generate_twofa_pin(self):
+        def random_digit():
+            return randint(0, 9)
+
+        pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
+
+        self.twofa_pin = pin
+
+        return pin
 
 
 if __name__ == "__main__":
