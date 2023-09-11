@@ -224,15 +224,16 @@ class RegisterFrame(tk.Frame):
         )
         phone_label.place(relx=0.02, rely=0.44, relheight=0.05, relwidth=0.3)
 
-        user_reg_entry = tk.Entry(self, font=fonts.mainFont2)
-        user_reg_entry.place(relx=0.1, rely=0.24, relheight=0.05, relwidth=0.8)
+        user_entry = tk.Entry(self, font=fonts.mainFont2)
+        user_entry.place(relx=0.1, rely=0.24, relheight=0.05, relwidth=0.8)
 
-        pass_reg_entry = tk.Entry(self, font=fonts.mainFont2)
-        pass_reg_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
+        pass_entry = tk.Entry(self, font=fonts.mainFont2)
+        pass_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
 
-        phone_reg_entry = tk.Entry(self, font=fonts.mainFont2)
-        phone_reg_entry.place(relx=0.1, rely=0.50, relheight=0.05, relwidth=0.8)
-        phone_reg_entry.insert(0, "+63")
+        vcmd = (self.register(self.__phone_entry_validator), "%d", "%i", "%P", "%S")
+        phone_entry = tk.Entry(self, validate="key", validatecommand=vcmd, font=fonts.mainFont2)
+        phone_entry.place(relx=0.1, rely=0.50, relheight=0.05, relwidth=0.8)
+        phone_entry.insert(0, "+63")
 
         phone_ghostlabel = tk.Label(
             self,
@@ -248,6 +249,26 @@ class RegisterFrame(tk.Frame):
             self, text="Register", font=fonts.boldMainFont2, command=self.bell
         )
         register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
+    
+    def __phone_entry_validator(self, action, index, entry_after_edit, character):
+        action_is_insert = action == "1"
+        limit = 13
+        if len(entry_after_edit) <= limit:
+            if index == "0":
+                cond1 = character == "+"
+                cond2 = character == "+63"
+                if (cond1 or cond2) and action_is_insert:
+                    return True
+            elif index == "1":
+                if character == "6" and action_is_insert:
+                    return True
+            elif index == "2":
+                if character == "3" and action_is_insert:
+                    return True
+            else:
+                return character.isdigit()
+            return False
+        return False
 
 
 class TwoFAToplevel(tk.Toplevel):
