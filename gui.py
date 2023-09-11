@@ -227,7 +227,7 @@ class RegisterFrame(tk.Frame):
         user_entry = tk.Entry(self, font=fonts.mainFont2)
         user_entry.place(relx=0.1, rely=0.24, relheight=0.05, relwidth=0.8)
 
-        pass_entry = tk.Entry(self, font=fonts.mainFont2)
+        pass_entry = tk.Entry(self, show="*", font=fonts.mainFont2)
         pass_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
 
         vcmd = (self.register(self.__phone_entry_validator), "%d", "%i", "%P", "%S")
