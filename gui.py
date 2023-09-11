@@ -250,24 +250,25 @@ class RegisterFrame(tk.Frame):
         )
         register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
     
-    def __phone_entry_validator(self, action, index, entry_after_edit, character):
-        action_is_insert = action == "1"
+    def __phone_entry_validator(self, action, index, entry, character):
         limit = 13
-        if len(entry_after_edit) <= limit:
-            if index == "0":
-                cond1 = character == "+"
-                cond2 = character == "+63"
-                if (cond1 or cond2) and action_is_insert:
-                    return True
-            elif index == "1":
-                if character == "6" and action_is_insert:
-                    return True
-            elif index == "2":
-                if character == "3" and action_is_insert:
-                    return True
-            else:
-                return character.isdigit()
-            return False
+        entry_under_limit = len(entry) <= limit
+
+        if entry_under_limit:
+            inserting_prefix = (
+                index == "0" and
+                character == "+63" and
+                action == "1"
+            )
+            if inserting_prefix:
+                return True
+            
+            overwriting_prefix = int(index) < 3
+            if overwriting_prefix:
+                return False
+
+            return character.isdigit()
+
         return False
 
 
