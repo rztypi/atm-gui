@@ -96,7 +96,7 @@ class WithdrawFrame(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        vcmd = (self.register(self.__withdraw_entry_validator), "%i", "%S")
+        vcmd = (self.register(self.__withdraw_entry_validator), "%i", "%P", "%S")
         withdraw_entry = tk.Entry(
             self, validate="key", validatecommand=vcmd, font=fonts.biggestFontBold
         )
@@ -121,7 +121,6 @@ class WithdrawFrame(tk.Frame):
 
     def withdraw_button_handler(self, withdraw_entry, app):
         withdraw_amount = withdraw_entry.get()
-
         if withdraw_amount:
             app.set_last_withdraw_amount(int(withdraw_amount))
 
@@ -129,16 +128,13 @@ class WithdrawFrame(tk.Frame):
         else:
             tk.messagebox.showerror("Withdraw Error", "Field must not be empty.")
 
-    def __withdraw_entry_validator(self, index, input_text):
+    def __withdraw_entry_validator(self, index, entry, input_text):
         input_is_many = len(input_text) > 1
-        index_is_zero = index == "0"
-        input_is_zero = input_text == "0"
-        input_is_digit = input_text.isdigit()
-
-        if input_is_many or (index_is_zero and input_is_zero):
+        first_char_is_zero = (index == "0" and input_text == "0") or entry[:1] == "0"
+        if input_is_many or first_char_is_zero:
             return False
 
-        return input_is_digit
+        return input_text.isdigit()
 
     def __move_icursor_to_end(self, event):
         event.widget.icursor(tk.END)
@@ -231,7 +227,9 @@ class RegisterFrame(tk.Frame):
         pass_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
 
         vcmd = (self.register(self.__phone_entry_validator), "%d", "%i", "%P", "%S")
-        phone_entry = tk.Entry(self, validate="key", validatecommand=vcmd, font=fonts.mainFont2)
+        phone_entry = tk.Entry(
+            self, validate="key", validatecommand=vcmd, font=fonts.mainFont2
+        )
         phone_entry.place(relx=0.1, rely=0.50, relheight=0.05, relwidth=0.8)
         phone_entry.insert(0, "+63")
 
@@ -249,25 +247,20 @@ class RegisterFrame(tk.Frame):
             self, text="Register", font=fonts.boldMainFont2, command=self.bell
         )
         register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
-    
-    def __phone_entry_validator(self, action, index, entry, character):
+
+    def __phone_entry_validator(self, action, index, entry, input_text):
         limit = 13
         entry_under_limit = len(entry) <= limit
-
         if entry_under_limit:
-            inserting_prefix = (
-                index == "0" and
-                character == "+63" and
-                action == "1"
-            )
+            inserting_prefix = index == "0" and input_text == "+63" and action == "1"
             if inserting_prefix:
                 return True
-            
+
             overwriting_prefix = int(index) < 3
             if overwriting_prefix:
                 return False
 
-            return character.isdigit()
+            return input_text.isdigit()
 
         return False
 
