@@ -6,7 +6,7 @@ import fonts
 import colors
 
 
-SKIP_TWOFA = True
+SKIP_TWOFA = False
 
 
 class WidgetMethods:
@@ -292,7 +292,7 @@ class TwoFAToplevel(tk.Toplevel):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        vcmd = (self.register(self.__pin_entry_validator), "%d", "%s", "%S")
+        vcmd = (self.register(self.__pin_entry_validator), "%P", "%S")
         pin_entry = tk.Entry(
             frame,
             justify=tk.CENTER,
@@ -300,7 +300,6 @@ class TwoFAToplevel(tk.Toplevel):
             validatecommand=vcmd,
             font=("Source Code Pro", 69, "bold"),
         )
-        pin_entry.bind("<Key>", self.__unfocus_entry)
         pin_entry.place(relx=0.1, rely=0.4, relheight=0.25, relwidth=0.8)
 
         verify_button = tk.Button(
@@ -328,28 +327,14 @@ class TwoFAToplevel(tk.Toplevel):
 
         app.change_frame_to(HomeFrame)
 
-    def __pin_entry_validator(self, action, entry, character):
-        action_is_delete = action == "0"
-        input_is_digit = character.isdigit()
-
+    def __pin_entry_validator(self, entry, input_text):
         limit = 4
-        entry_under_limit = len(entry) < limit
+        entry_under_limit = len(entry) <= limit
+        if entry_under_limit:
+            return input_text.isdigit()
 
-        if action_is_delete or (input_is_digit and entry_under_limit):
-            return True
         return False
 
-    # WORKING ON THIS
-    def __unfocus_entry(self, event):
-        entry_length = len(event.widget.get())
-
-        if event.keysym == "BackSpace":
-            entry_length -= 1
-        else:
-            entry_length += 1
-
-        if entry_length >= 4:
-            self.focus()
 
 
 class LoginFrame(tk.Frame):
