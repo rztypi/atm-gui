@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from random import randint
 
 import fonts
@@ -48,7 +49,7 @@ class WithdrawCompleteFrame(tk.Frame):
         withdraw_amount = app.get_last_withdraw_amount()
         withdraw_amount_label = tk.Label(
             self,
-            text=f"₱{withdraw_amount}",
+            text=f"₱{withdraw_amount:,}",
             bg="black",
             fg="#bababa",
             font=fonts.bigFontBold,
@@ -95,10 +96,11 @@ class WithdrawFrame(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        vcmd = (self.register(self.__on_validate), "%S")
+        vcmd = (self.register(self.__withdraw_entry_validator), "%i", "%S")
         withdraw_entry = tk.Entry(
             self, validate="key", validatecommand=vcmd, font=fonts.biggestFontBold
         )
+        withdraw_entry.bind("<Key>", self.__move_icursor_to_end)
         withdraw_entry.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
 
         withdraw_button = tk.Button(
@@ -119,12 +121,27 @@ class WithdrawFrame(tk.Frame):
 
     def withdraw_button_handler(self, withdraw_entry, app):
         withdraw_amount = withdraw_entry.get()
-        app.set_last_withdraw_amount(withdraw_amount)
 
-        app.change_frame_to(WithdrawCompleteFrame)
+        if withdraw_amount:
+            app.set_last_withdraw_amount(int(withdraw_amount))
 
-    def __on_validate(self, c):
-        return c.isdigit()
+            app.change_frame_to(WithdrawCompleteFrame)
+        else:
+            tk.messagebox.showerror("Withdraw Error", "Field must not be empty.")
+
+    def __withdraw_entry_validator(self, index, input_text):
+        input_is_many = len(input_text) > 1
+        index_is_zero = index == "0"
+        input_is_zero = input_text == "0"
+        input_is_digit = input_text.isdigit()
+
+        if input_is_many or (index_is_zero and input_is_zero):
+            return False
+
+        return input_is_digit
+
+    def __move_icursor_to_end(self, event):
+        event.widget.icursor(tk.END)
 
 
 class HomeFrame(tk.Frame):
@@ -163,6 +180,76 @@ class HomeFrame(tk.Frame):
         exit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
 
 
+class RegisterFrame(tk.Frame):
+    def __init__(self, parent, app):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+
+        window_label = tk.Label(
+            self,
+            text="Registration Form",
+            bg="black",
+            fg="white",
+            font=fonts.bigFontBold,
+        )
+        window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        user_label = tk.Label(
+            self,
+            text="User Name: ",
+            bg="black",
+            fg="white",
+            anchor=tk.W,
+            font=fonts.boldMainFont2,
+        )
+        user_label.place(relx=0.02, rely=0.18, relheight=0.05, relwidth=0.3)
+
+        pass_label = tk.Label(
+            self,
+            text="Password: ",
+            bg="black",
+            fg="white",
+            anchor=tk.W,
+            font=fonts.boldMainFont2,
+        )
+        pass_label.place(relx=0.02, rely=0.31, relheight=0.05, relwidth=0.3)
+
+        phone_label = tk.Label(
+            self,
+            text="Phone Number: ",
+            bg="black",
+            fg="white",
+            anchor=tk.W,
+            font=fonts.boldMainFont2,
+        )
+        phone_label.place(relx=0.02, rely=0.44, relheight=0.05, relwidth=0.3)
+
+        user_reg_entry = tk.Entry(self, font=fonts.mainFont2)
+        user_reg_entry.place(relx=0.1, rely=0.24, relheight=0.05, relwidth=0.8)
+
+        pass_reg_entry = tk.Entry(self, font=fonts.mainFont2)
+        pass_reg_entry.place(relx=0.1, rely=0.37, relheight=0.05, relwidth=0.8)
+
+        phone_reg_entry = tk.Entry(self, font=fonts.mainFont2)
+        phone_reg_entry.place(relx=0.1, rely=0.50, relheight=0.05, relwidth=0.8)
+        phone_reg_entry.insert(0, "+63")
+
+        phone_ghostlabel = tk.Label(
+            self,
+            text="Format: +63**********",
+            bg="black",
+            fg="#bababa",
+            anchor=tk.W,
+            font=fonts.sMainFont2,
+        )
+        phone_ghostlabel.place(relx=0.1, rely=0.56, relheight=0.02, relwidth=0.8)
+
+        register_button = tk.Button(
+            self, text="Register", font=fonts.boldMainFont2, command=self.bell
+        )
+        register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
+
+
 class TwoFAToplevel(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self)
@@ -190,7 +277,7 @@ class TwoFAToplevel(tk.Toplevel):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        vcmd = (self.register(self.__on_validate), "%d", "%s", "%S")
+        vcmd = (self.register(self.__pin_entry_validator), "%d", "%s", "%S")
         pin_entry = tk.Entry(
             frame,
             justify=tk.CENTER,
@@ -198,6 +285,7 @@ class TwoFAToplevel(tk.Toplevel):
             validatecommand=vcmd,
             font=("Source Code Pro", 69, "bold"),
         )
+        pin_entry.bind("<Key>", self.__unfocus_entry)
         pin_entry.place(relx=0.1, rely=0.4, relheight=0.25, relwidth=0.8)
 
         verify_button = tk.Button(
@@ -225,14 +313,28 @@ class TwoFAToplevel(tk.Toplevel):
 
         app.change_frame_to(HomeFrame)
 
-    def __on_validate(self, action, entry, character):
+    def __pin_entry_validator(self, action, entry, character):
         action_is_delete = action == "0"
-        char_isdigit = character.isdigit()
-        entry_under_limit = len(entry) < 4
+        input_is_digit = character.isdigit()
 
-        if action_is_delete or (char_isdigit and entry_under_limit):
+        limit = 4
+        entry_under_limit = len(entry) < limit
+
+        if action_is_delete or (input_is_digit and entry_under_limit):
             return True
         return False
+
+    # WORKING ON THIS
+    def __unfocus_entry(self, event):
+        entry_length = len(event.widget.get())
+
+        if event.keysym == "BackSpace":
+            entry_length -= 1
+        else:
+            entry_length += 1
+
+        if entry_length >= 4:
+            self.focus()
 
 
 class LoginFrame(tk.Frame):
@@ -293,7 +395,10 @@ class LoginFrame(tk.Frame):
         register_label.place(relx=0.1, rely=0.82, relheight=0.02, relwidth=0.8)
 
         register_button = tk.Button(
-            self, text="Register", font=fonts.boldMainFont, command=self.bell
+            self,
+            text="Register",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_frame_to(RegisterFrame),
         )
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
