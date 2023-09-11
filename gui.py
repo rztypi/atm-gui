@@ -458,17 +458,17 @@ class App(tk.Tk):
 
         WidgetMethods.set_window_geometry(self, x=720, y=720)
 
-        self.container = tk.Frame(self, bg=colors.secondary)
-        self.container.place(relwidth=1, relheight=1)
-        self.active_frame = LoginFrame(self.container, self)
+        self.__container = tk.Frame(self, bg=colors.secondary)
+        self.__container.place(relwidth=1, relheight=1)
+        self.__active_frame = LoginFrame(self.__container, self)
 
-        self.__twofa_pin = ""
+        self.twofa_pin = ""
 
-        self.__last_withdraw_amount = 0
+        self.last_withdraw_amount = 0
 
     def change_frame_to(self, Frame):
-        self.active_frame.destroy()
-        self.active_frame = Frame(self.container, app)
+        self.__active_frame.destroy()
+        self.__active_frame = Frame(self.__container, app)
 
     def generate_twofa_pin(self):
         def random_digit():
@@ -476,16 +476,16 @@ class App(tk.Tk):
 
         pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
 
-        self.__twofa_pin = pin
+        self.twofa_pin = pin
 
     def get_twofa_pin(self):
-        return self.__twofa_pin
+        return self.twofa_pin
 
     def set_last_withdraw_amount(self, amount):
-        self.__last_withdraw_amount = amount
+        self.last_withdraw_amount = amount
 
     def get_last_withdraw_amount(self):
-        return self.__last_withdraw_amount
+        return self.last_withdraw_amount
 
 
 if __name__ == "__main__":
