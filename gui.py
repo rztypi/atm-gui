@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
+
 import sqlite3
 from random import randint
 
 import fonts
 import colors
+from utils.validators import form_is_valid
 
 
 DB_PATH = "test.db"
@@ -325,7 +327,12 @@ class RegisterFrame(tk.Frame):
         phone_ghostlabel.place(relx=0.1, rely=0.56, relheight=0.02, relwidth=0.8)
 
         register_button = tk.Button(
-            self, text="Register", font=fonts.boldMainFont2, command=self.bell
+            self,
+            text="Register",
+            font=fonts.boldMainFont2,
+            command=lambda: self.register_button_click(
+                user_entry, pass_entry, phone_entry
+            ),
         )
         register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
 
@@ -336,6 +343,30 @@ class RegisterFrame(tk.Frame):
             command=lambda: app.change_frame_to(LoginFrame),
         )
         back_button.place(relx=0.4, rely=0.8, relheight=0.08, relwidth=0.2)
+
+    def register_button_click(self, user_entry, pass_entry, phone_entry):
+        username = user_entry.get()
+        password = pass_entry.get()
+        phone_number = phone_entry.get()
+
+        if form_is_valid(
+            username=username,
+            password=password,
+            phone_number=phone_number,
+        ):
+            if app.db.register_account(username, password, phone_number):
+                print("Registration success!")
+            else:
+                print("Registration failed.")
+
+    @staticmethod
+    def __user_check(username):
+        if username:
+            return True
+        else:
+            tk.messagebox.showerror(
+                "Login Error", "You cannot leave the username blank."
+            )
 
     def __phone_entry_validator(self, action, index, entry, input_text):
         limit = 13
