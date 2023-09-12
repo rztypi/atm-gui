@@ -1,7 +1,6 @@
 import tkinter as tk
 
 import fonts
-from pages import HomePage
 from utils import widgets
 
 
@@ -65,7 +64,7 @@ class TwoFAWindow(tk.Toplevel):
     def __open_atm_system(self, app):
         self.destroy()
 
-        app.change_page_to(HomePage)
+        app.change_page_to("HomePage")
 
     def __pin_entry_validator(self, entry, input_text):
         limit = 4
@@ -74,3 +73,10 @@ class TwoFAWindow(tk.Toplevel):
             return input_text.isdigit()
 
         return False
+
+
+__window_list = [
+    TwoFAWindow
+]
+
+name_to_window = {cls.__name__: cls for cls in __window_list}

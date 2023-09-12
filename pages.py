@@ -3,12 +3,11 @@ from tkinter import messagebox
 
 import fonts
 import colors
-from windows import TwoFAWindow
 from utils import widgets
 from utils.validators import form_is_valid
 
 
-SKIP_TWOFA = True
+SKIP_TWOFA = False
 
 
 class WithdrawCompletePage(tk.Frame):
@@ -47,7 +46,7 @@ class WithdrawCompletePage(tk.Frame):
             self,
             text="New Transaction",
             font=fonts.boldMainFont,
-            command=lambda: app.change_page_to(HomePage),
+            command=lambda: app.change_page_to("HomePage"),
         )
         new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
 
@@ -55,7 +54,7 @@ class WithdrawCompletePage(tk.Frame):
             self,
             text="Exit",
             font=fonts.boldMainFont,
-            command=lambda: app.change_page_to(LoginPage),
+            command=lambda: app.change_page_to("LoginPage"),
         )
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
 
@@ -102,7 +101,7 @@ class WithdrawPage(tk.Frame):
             self,
             text="Back",
             font=fonts.boldMainFont,
-            command=lambda: app.change_page_to(HomePage),
+            command=lambda: app.change_page_to("HomePage"),
         )
         back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
 
@@ -111,7 +110,7 @@ class WithdrawPage(tk.Frame):
         if withdraw_amount:
             app.last_withdraw_amount = int(withdraw_amount)
 
-            app.change_page_to(WithdrawCompletePage)
+            app.change_page_to("WithdrawCompletePage")
         else:
             tk.messagebox.showerror("Withdraw Error", "Field must not be empty.")
 
@@ -150,7 +149,7 @@ class HomePage(tk.Frame):
             self,
             text="Withdraw",
             font=fonts.boldMainFont,
-            command=lambda: app.change_page_to(WithdrawPage),
+            command=lambda: app.change_page_to("WithdrawPage"),
         )
         withdraw_button.place(relx=0.3, rely=0.55, relheight=0.08, relwidth=0.4)
 
@@ -158,7 +157,7 @@ class HomePage(tk.Frame):
             self,
             text="Exit",
             font=fonts.boldMainFont,
-            command=lambda: app.change_page_to(LoginPage),
+            command=lambda: app.change_page_to("LoginPage"),
         )
         exit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
 
@@ -244,7 +243,7 @@ class RegisterPage(tk.Frame):
             self,
             text="Back",
             font=fonts.boldMainFont2,
-            command=lambda: app.change_page_to(LoginPage),
+            command=lambda: app.change_page_to("LoginPage"),
         )
         back_button.place(relx=0.4, rely=0.8, relheight=0.08, relwidth=0.2)
 
@@ -350,7 +349,7 @@ class LoginPage(tk.Frame):
             self,
             text="Register",
             font=fonts.boldMainFont,
-            command=lambda: app.change_page_to(RegisterPage),
+            command=lambda: app.change_page_to("RegisterPage"),
         )
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
@@ -366,7 +365,7 @@ class LoginPage(tk.Frame):
                 app.active_user = username
 
                 if SKIP_TWOFA:
-                    app.change_page_to(HomePage)
+                    app.change_page_to("HomePage")
                 else:
                     self.__open_twofa_window(app)
             else:
@@ -375,4 +374,15 @@ class LoginPage(tk.Frame):
                 )
 
     def __open_twofa_window(self, app):
-        app.show_window(TwoFAWindow)
+        app.show_window("TwoFAWindow")
+
+
+__page_list = [
+    LoginPage,
+    RegisterPage,
+    HomePage,
+    WithdrawPage,
+    WithdrawCompletePage
+]
+
+name_to_page = {cls.__name__: cls for cls in __page_list}

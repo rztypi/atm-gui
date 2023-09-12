@@ -3,7 +3,8 @@ from random import randint
 
 import colors
 from db.database import Database
-from pages import LoginPage
+from pages import name_to_page
+from windows import name_to_window
 from utils import widgets
 
 
@@ -42,15 +43,19 @@ class App(tk.Tk):
 
         self.__container = tk.Frame(self, bg=colors.secondary)
         self.__container.place(relwidth=1, relheight=1)
-        self.__active_page = LoginPage(self.__container, self)
+        self.__active_page = tk.Frame()
+        self.change_page_to("LoginPage")
 
-    def change_page_to(self, Page):
+    def change_page_to(self, page_name):
         """Changes the currently active page of the GUI."""
         self.__active_page.destroy()
+
+        Page = name_to_page[page_name]
         self.__active_page = Page(self.__container, self)
 
-    def show_window(self, Window):
+    def show_window(self, window_name):
         """Shows the toplevel window specified by the Window object."""
+        Window = name_to_window[window_name]
         Window(self)
 
     def generate_twofa_pin(self):
