@@ -1,12 +1,63 @@
 import tkinter as tk
 from tkinter import messagebox
+import sqlite3
 from random import randint
 
 import fonts
 import colors
 
 
-SKIP_TWOFA = False
+DB_PATH = "test.db"
+SKIP_TWOFA = True
+
+
+class Database:
+    """
+    A class for handling the GUI's database-related functions.
+
+    Parameters:
+        db_path (str): The path of the database file.
+
+    Attributes:
+        conn (sqlite3.Connection): The database connection.
+    """
+
+    def __init__(self, db_path):
+        """Initializes a connection to the database pointed by db_path."""
+        self.conn = sqlite3.connect(db_path)
+
+    def close(self):
+        """Closes the database connection."""
+        self.conn.close()
+
+    def login_account(self, username, password):
+        """
+        Checks if username and password arguments exist in the database.
+
+        Parameters:
+            username (str): The username entry from the login form.
+            password (str): The password entry from the login form.
+
+        Returns:
+            str: The value of username if login is successful, empty string if not.
+        """
+        cursor = self.conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT username, password
+            FROM accounts
+            WHERE username = ?
+            AND password = ?
+            """,
+            (username, password),
+        )
+
+        login_found = cursor.fetchone()
+
+        cursor.close()
+
+        return username if login_found else ""
 
 
 class WidgetMethods:
@@ -334,7 +385,6 @@ class TwoFAToplevel(tk.Toplevel):
             return input_text.isdigit()
 
         return False
-
 
 
 class LoginFrame(tk.Frame):
