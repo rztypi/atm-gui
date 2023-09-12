@@ -14,7 +14,7 @@ SKIP_TWOFA = False
 
 
 class Database:
-    """A class for handling the GUI's database-related functions.
+    """A class for handling the app's database-related functions.
 
     Attributes:
         conn (sqlite3.Connection): The database connection.
@@ -107,7 +107,7 @@ class WidgetMethods:
         entry_field.delete(0, tk.END)
 
 
-class WithdrawCompleteFrame(tk.Frame):
+class WithdrawCompletePage(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg="black")
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -143,7 +143,7 @@ class WithdrawCompleteFrame(tk.Frame):
             self,
             text="New Transaction",
             font=fonts.boldMainFont,
-            command=lambda: app.change_frame_to(HomeFrame),
+            command=lambda: app.change_page_to(HomePage),
         )
         new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
 
@@ -151,12 +151,12 @@ class WithdrawCompleteFrame(tk.Frame):
             self,
             text="Exit",
             font=fonts.boldMainFont,
-            command=lambda: app.change_frame_to(LoginFrame),
+            command=lambda: app.change_page_to(LoginPage),
         )
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
 
 
-class WithdrawFrame(tk.Frame):
+class WithdrawPage(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg="black")
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -198,7 +198,7 @@ class WithdrawFrame(tk.Frame):
             self,
             text="Back",
             font=fonts.boldMainFont,
-            command=lambda: app.change_frame_to(HomeFrame),
+            command=lambda: app.change_page_to(HomePage),
         )
         back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
 
@@ -207,7 +207,7 @@ class WithdrawFrame(tk.Frame):
         if withdraw_amount:
             app.last_withdraw_amount = int(withdraw_amount)
 
-            app.change_frame_to(WithdrawCompleteFrame)
+            app.change_page_to(WithdrawCompletePage)
         else:
             tk.messagebox.showerror("Withdraw Error", "Field must not be empty.")
 
@@ -223,7 +223,7 @@ class WithdrawFrame(tk.Frame):
         event.widget.icursor(tk.END)
 
 
-class HomeFrame(tk.Frame):
+class HomePage(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg="black")
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -246,7 +246,7 @@ class HomeFrame(tk.Frame):
             self,
             text="Withdraw",
             font=fonts.boldMainFont,
-            command=lambda: app.change_frame_to(WithdrawFrame),
+            command=lambda: app.change_page_to(WithdrawPage),
         )
         withdraw_button.place(relx=0.3, rely=0.55, relheight=0.08, relwidth=0.4)
 
@@ -254,12 +254,12 @@ class HomeFrame(tk.Frame):
             self,
             text="Exit",
             font=fonts.boldMainFont,
-            command=lambda: app.change_frame_to(LoginFrame),
+            command=lambda: app.change_page_to(LoginPage),
         )
         exit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
 
 
-class RegisterFrame(tk.Frame):
+class RegisterPage(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg="black")
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -340,7 +340,7 @@ class RegisterFrame(tk.Frame):
             self,
             text="Back",
             font=fonts.boldMainFont2,
-            command=lambda: app.change_frame_to(LoginFrame),
+            command=lambda: app.change_page_to(LoginPage),
         )
         back_button.place(relx=0.4, rely=0.8, relheight=0.08, relwidth=0.2)
 
@@ -445,7 +445,7 @@ class TwoFAToplevel(tk.Toplevel):
     def __open_atm_system(self, app):
         self.destroy()
 
-        app.change_frame_to(HomeFrame)
+        app.change_page_to(HomePage)
 
     def __pin_entry_validator(self, entry, input_text):
         limit = 4
@@ -456,7 +456,7 @@ class TwoFAToplevel(tk.Toplevel):
         return False
 
 
-class LoginFrame(tk.Frame):
+class LoginPage(tk.Frame):
     def __init__(self, parent, app):
         tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -517,7 +517,7 @@ class LoginFrame(tk.Frame):
             self,
             text="Register",
             font=fonts.boldMainFont,
-            command=lambda: app.change_frame_to(RegisterFrame),
+            command=lambda: app.change_page_to(RegisterPage),
         )
         register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
 
@@ -533,7 +533,7 @@ class LoginFrame(tk.Frame):
                 app.active_user = username
 
                 if SKIP_TWOFA:
-                    app.change_frame_to(HomeFrame)
+                    app.change_page_to(HomePage)
                 else:
                     self.__open_twofa_window(app)
             else:
@@ -549,12 +549,12 @@ class App(tk.Tk):
     """The root Tk window of the GUI.
 
     Attributes:
-        db (gui.Database): The local database class of the GUI.
+        db (gui.Database): A database class of the app.
         active_user (str): The username of the currently logged in user.
         twofa_pin (str): A 4-digit PIN generated for two-factor authentication.
         last_withdraw_amount (int): The withdraw amount displayed when withdraw is done.
-        __active_frame (tk.Frame): The currently displayed frame of the GUI.
-        __container (tk.Frame): The container of __active_frame.
+        __active_page (tk.Frame): The currently displayed page of the GUI.
+        __container (tk.Frame): The container of __active_page.
     """
 
     def __init__(self, db):
@@ -577,16 +577,16 @@ class App(tk.Tk):
 
         self.__container = tk.Frame(self, bg=colors.secondary)
         self.__container.place(relwidth=1, relheight=1)
-        self.__active_frame = LoginFrame(self.__container, self)
+        self.__active_page = LoginPage(self.__container, self)
 
-    def change_frame_to(self, Frame):
-        """Changes the currently active frame of the GUI.
+    def change_page_to(self, Page):
+        """Changes the currently active page of the GUI.
 
         Parameters:
-            Frame (tk.Frame): The local Frame object to display.
+            Page (tk.Frame): The local Page class to display.
         """
-        self.__active_frame.destroy()
-        self.__active_frame = Frame(self.__container, app)
+        self.__active_page.destroy()
+        self.__active_page = Page(self.__container, app)
 
     def generate_twofa_pin(self):
         """Generates and sets a random 4-digit pin for the twofa_pin attribute."""
