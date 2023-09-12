@@ -304,7 +304,7 @@ class RegisterPage(tk.Frame):
         return False
 
 
-class TwoFAToplevel(tk.Toplevel):
+class TwoFAWindow(tk.Toplevel):
     def __init__(self, app):
         tk.Toplevel.__init__(self)
         self.title("Two-Factor Authentication")
@@ -461,7 +461,7 @@ class LoginPage(tk.Frame):
                 )
 
     def __open_twofa_window(self, app):
-        TwoFAToplevel(app)
+        app.show_window(TwoFAWindow)
 
 
 class App(tk.Tk):
@@ -480,7 +480,7 @@ class App(tk.Tk):
         """Initializes the App class and its attributes.
 
         Parameters:
-            db (gui.Database): The local database class of the GUI.
+            db (db.database.Database): The local database class of the GUI.
         """
         tk.Tk.__init__(self)
         self.title("ATM System")
@@ -499,13 +499,13 @@ class App(tk.Tk):
         self.__active_page = LoginPage(self.__container, self)
 
     def change_page_to(self, Page):
-        """Changes the currently active page of the GUI.
-
-        Parameters:
-            Page (tk.Frame): The local Page class to display.
-        """
+        """Changes the currently active page of the GUI."""
         self.__active_page.destroy()
-        self.__active_page = Page(self.__container, app)
+        self.__active_page = Page(self.__container, self)
+    
+    def show_window(self, Window):
+        """Shows the toplevel window specified by the Window object."""
+        Window(self)
 
     def generate_twofa_pin(self):
         """Generates and sets a random 4-digit pin for the twofa_pin attribute."""
