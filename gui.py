@@ -329,6 +329,14 @@ class RegisterFrame(tk.Frame):
         )
         register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
 
+        back_button = tk.Button(
+            self,
+            text="Back",
+            font=fonts.boldMainFont2,
+            command=lambda: app.change_frame_to(LoginFrame),
+        )
+        back_button.place(relx=0.4, rely=0.8, relheight=0.08, relwidth=0.2)
+
     def __phone_entry_validator(self, action, index, entry, input_text):
         limit = 13
         entry_under_limit = len(entry) <= limit
