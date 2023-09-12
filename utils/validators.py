@@ -29,6 +29,7 @@ def phone_number_is_valid(phone_number):
         messagebox.showerror(
             "Form Error", "Phone number field must have a length of 13."
         )
+        return False
 
 
 __field_to_checker_func = {
