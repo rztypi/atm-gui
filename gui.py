@@ -528,15 +528,18 @@ class LoginFrame(tk.Frame):
         WidgetMethods.clear_entry_field(user_entry)
         WidgetMethods.clear_entry_field(pass_entry)
 
-        if app.db.login_account(username, password):
-            app.active_user = username
+        if form_is_valid(username=username, password=password):
+            if app.db.login_account(username, password):
+                app.active_user = username
 
-            if SKIP_TWOFA:
-                app.change_frame_to(HomeFrame)
+                if SKIP_TWOFA:
+                    app.change_frame_to(HomeFrame)
+                else:
+                    self.__open_twofa_window(app)
             else:
-                self.__open_twofa_window(app)
-        else:
-            tk.messagebox.showerror("Login Error", "Username and password not found.")
+                tk.messagebox.showerror(
+                    "Login Error", "Username and password not found."
+                )
 
     def __open_twofa_window(self, app):
         TwoFAToplevel(app)
