@@ -8,12 +8,11 @@ import colors
 
 
 DB_PATH = "test.db"
-SKIP_TWOFA = True
+SKIP_TWOFA = False
 
 
 class Database:
-    """
-    A class for handling the GUI's database-related functions.
+    """A class for handling the GUI's database-related functions.
 
     Parameters:
         db_path (str): The path of the database file.
@@ -23,7 +22,7 @@ class Database:
     """
 
     def __init__(self, db_path):
-        """Initializes a connection to the database pointed by db_path."""
+        """Initializes a database_connection to db_path."""
         self.conn = sqlite3.connect(db_path)
 
     def close(self):
@@ -31,8 +30,7 @@ class Database:
         self.conn.close()
 
     def login_account(self, username, password):
-        """
-        Checks if username and password arguments exist in the database.
+        """Checks if username and password arguments exist in the database.
 
         Parameters:
             username (str): The username entry from the login form.
@@ -97,10 +95,9 @@ class WithdrawCompleteFrame(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        withdraw_amount = app.get_last_withdraw_amount()
         withdraw_amount_label = tk.Label(
             self,
-            text=f"₱{withdraw_amount:,}",
+            text=f"₱{app.last_withdraw_amount:,}",
             bg="black",
             fg="#bababa",
             font=fonts.bigFontBold,
@@ -173,7 +170,7 @@ class WithdrawFrame(tk.Frame):
     def withdraw_button_handler(self, withdraw_entry, app):
         withdraw_amount = withdraw_entry.get()
         if withdraw_amount:
-            app.set_last_withdraw_amount(int(withdraw_amount))
+            app.last_withdraw_amount = int(withdraw_amount)
 
             app.change_frame_to(WithdrawCompleteFrame)
         else:
@@ -324,7 +321,7 @@ class TwoFAToplevel(tk.Toplevel):
         WidgetMethods.set_window_geometry(self, x=400, y=400)
 
         app.generate_twofa_pin()
-        print(app.get_twofa_pin())
+        print(app.twofa_pin)
 
         frame = tk.Frame(self, bg="black")
         frame.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
@@ -364,7 +361,7 @@ class TwoFAToplevel(tk.Toplevel):
     def authenticate_twofa(self, pin_entry, app):
         pin = pin_entry.get()
 
-        if pin == app.get_twofa_pin():
+        if pin == app.twofa_pin:
             self.__open_atm_system(app)
         else:
             tk.messagebox.showerror("Verification Error", "PIN does not match.")
@@ -460,7 +457,7 @@ class LoginFrame(tk.Frame):
         WidgetMethods.clear_entry_field(pass_entry)
 
         if app.db.login_account(username, password):
-            app.set_active_user(username)
+            app.active_user = username
 
             if SKIP_TWOFA:
                 app.change_frame_to(HomeFrame)
@@ -474,7 +471,22 @@ class LoginFrame(tk.Frame):
 
 
 class App(tk.Tk):
+    """The root Tk window of the GUI.
+    
+    Attributes:
+        db (gui.Database): The local database class of the GUI.
+        active_user (str): The username of the currently logged in user.
+        twofa_pin (str): A 4-digit PIN generated for two-factor authentication.
+        last_withdraw_amount (int): The withdraw amount displayed when withdraw is done.
+        __active_frame (tk.Frame): The currently displayed frame of the GUI.
+        __container (tk.Frame): The container of __active_frame.
+    """
     def __init__(self, db):
+        """Initializes the App class and its attributes.
+
+        Parameters:
+            db (gui.Database): The local database class of the GUI.
+        """
         tk.Tk.__init__(self)
         self.title("ATM System")
         self["background"] = "white"
@@ -482,7 +494,7 @@ class App(tk.Tk):
         WidgetMethods.set_window_geometry(self, x=720, y=720)
 
         self.db = db
-        self.__active_user = ""
+        self.active_user = ""
 
         self.__twofa_pin = ""
         self.__last_withdraw_amount = 0
@@ -492,16 +504,20 @@ class App(tk.Tk):
         self.__active_frame = LoginFrame(self.__container, self)
 
     def change_frame_to(self, Frame):
+        """Changes the currently active frame of the GUI.
+        
+        Parameters:
+            Frame (tk.Frame): The local Frame object to display.
+        """
         self.__active_frame.destroy()
         self.__active_frame = Frame(self.__container, app)
 
-    def set_active_user(self, username):
-        self.__active_user = username
-
-    def get_active_user(self):
-        return self.__active_user
+    @property
+    def twofa_pin(self):
+        return self.__twofa_pin
 
     def generate_twofa_pin(self):
+        """Generates and sets a random 4-digit pin for the twofa_pin attribute."""
         def random_digit():
             return randint(0, 9)
 
@@ -509,14 +525,13 @@ class App(tk.Tk):
 
         self.__twofa_pin = pin
 
-    def get_twofa_pin(self):
-        return self.__twofa_pin
-
-    def set_last_withdraw_amount(self, amount):
-        self.__last_withdraw_amount = amount
-
-    def get_last_withdraw_amount(self):
+    @property
+    def last_withdraw_amount(self):
         return self.__last_withdraw_amount
+
+    @last_withdraw_amount.setter
+    def last_withdraw_amount(self, amount):
+        self.__last_withdraw_amount = int(amount)
 
 
 if __name__ == "__main__":
