@@ -14,15 +14,16 @@ SKIP_TWOFA = False
 class Database:
     """A class for handling the GUI's database-related functions.
 
-    Parameters:
-        db_path (str): The path of the database file.
-
     Attributes:
         conn (sqlite3.Connection): The database connection.
     """
 
     def __init__(self, db_path):
-        """Initializes a database_connection to db_path."""
+        """Initializes a database connection to db_path.
+
+        Parameters:
+            db_path (str): The path of the database.
+        """
         self.conn = sqlite3.connect(db_path)
 
     def close(self):
@@ -56,6 +57,38 @@ class Database:
         cursor.close()
 
         return True if login_found else False
+
+    def register_account(self, username, password, phone_number):
+        """Inserts the account details from the registration form to the database.
+
+        Parameters:
+            username (str): The username entry from the register form.
+            password (str): The password entry from the register form.
+            phone_number (str): The phone_number entry from the register form.
+
+        Returns:
+            bool: True if registration is successful, False if not.
+        """
+        cursor = self.conn.cursor()
+
+        try:
+            cursor.execute(
+                """
+                INSERT INTO accounts VALUES
+                    (?, ?, ?)
+                """,
+                (username, password, phone_number),
+            )
+        except sqlite3.IntegrityError:
+            register_status = False
+        else:
+            self.conn.commit()
+
+            register_status = True
+
+        cursor.close()
+
+        return register_status
 
 
 class WidgetMethods:
@@ -472,7 +505,7 @@ class LoginFrame(tk.Frame):
 
 class App(tk.Tk):
     """The root Tk window of the GUI.
-    
+
     Attributes:
         db (gui.Database): The local database class of the GUI.
         active_user (str): The username of the currently logged in user.
@@ -481,6 +514,7 @@ class App(tk.Tk):
         __active_frame (tk.Frame): The currently displayed frame of the GUI.
         __container (tk.Frame): The container of __active_frame.
     """
+
     def __init__(self, db):
         """Initializes the App class and its attributes.
 
@@ -505,25 +539,26 @@ class App(tk.Tk):
 
     def change_frame_to(self, Frame):
         """Changes the currently active frame of the GUI.
-        
+
         Parameters:
             Frame (tk.Frame): The local Frame object to display.
         """
         self.__active_frame.destroy()
         self.__active_frame = Frame(self.__container, app)
 
-    @property
-    def twofa_pin(self):
-        return self.__twofa_pin
-
     def generate_twofa_pin(self):
         """Generates and sets a random 4-digit pin for the twofa_pin attribute."""
+
         def random_digit():
             return randint(0, 9)
 
         pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
 
         self.__twofa_pin = pin
+
+    @property
+    def twofa_pin(self):
+        return self.__twofa_pin
 
     @property
     def last_withdraw_amount(self):
