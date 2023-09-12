@@ -39,7 +39,7 @@ class Database:
             password (str): The password entry from the login form.
 
         Returns:
-            str: The value of username if login is successful, empty string if not.
+            bool: True if login is successful, False if not.
         """
         cursor = self.conn.cursor()
 
@@ -57,7 +57,7 @@ class Database:
 
         cursor.close()
 
-        return username if login_found else ""
+        return True if login_found else False
 
 
 class WidgetMethods:
@@ -459,51 +459,47 @@ class LoginFrame(tk.Frame):
         WidgetMethods.clear_entry_field(user_entry)
         WidgetMethods.clear_entry_field(pass_entry)
 
-        if self.__user_check(username) and self.__pass_check(password):
+        if app.db.login_account(username, password):
+            app.set_active_user(username)
+
             if SKIP_TWOFA:
                 app.change_frame_to(HomeFrame)
             else:
                 self.__open_twofa_window(app)
-
-    def __user_check(self, username):
-        if not username:
-            tk.messagebox.showerror(
-                "Login Error", "You cannot leave your username blank."
-            )
-            return False
-        return True
-
-    def __pass_check(self, password):
-        if not password:
-            tk.messagebox.showerror(
-                "Login Error", "You cannot leave your password blank."
-            )
-            return False
-        return True
+        else:
+            tk.messagebox.showerror("Login Error", "Username and password not found.")
 
     def __open_twofa_window(self, app):
         TwoFAToplevel(app)
 
 
 class App(tk.Tk):
-    def __init__(self):
+    def __init__(self, db):
         tk.Tk.__init__(self)
         self.title("ATM System")
         self["background"] = "white"
 
         WidgetMethods.set_window_geometry(self, x=720, y=720)
 
+        self.db = db
+        self.__active_user = ""
+
+        self.__twofa_pin = ""
+        self.__last_withdraw_amount = 0
+
         self.__container = tk.Frame(self, bg=colors.secondary)
         self.__container.place(relwidth=1, relheight=1)
         self.__active_frame = LoginFrame(self.__container, self)
 
-        self.twofa_pin = ""
-
-        self.last_withdraw_amount = 0
-
     def change_frame_to(self, Frame):
         self.__active_frame.destroy()
         self.__active_frame = Frame(self.__container, app)
+
+    def set_active_user(self, username):
+        self.__active_user = username
+
+    def get_active_user(self):
+        return self.__active_user
 
     def generate_twofa_pin(self):
         def random_digit():
@@ -511,18 +507,20 @@ class App(tk.Tk):
 
         pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
 
-        self.twofa_pin = pin
+        self.__twofa_pin = pin
 
     def get_twofa_pin(self):
-        return self.twofa_pin
+        return self.__twofa_pin
 
     def set_last_withdraw_amount(self, amount):
-        self.last_withdraw_amount = amount
+        self.__last_withdraw_amount = amount
 
     def get_last_withdraw_amount(self):
-        return self.last_withdraw_amount
+        return self.__last_withdraw_amount
 
 
 if __name__ == "__main__":
-    app = App()
+    db = Database(DB_PATH)
+    app = App(db)
     app.mainloop()
+    db.close()
