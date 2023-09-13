@@ -15,6 +15,7 @@ class App(tk.Tk):
     Attributes:
         db (gui.Database): A database class of the app.
         active_user (str): The username of the currently logged in user.
+        active_user_balance (int): The account balance of the currently logged in user.
         twofa_pin (str): A 4-digit PIN generated for two-factor authentication.
         last_withdraw_amount (int): The withdraw amount displayed when withdraw is done.
         __active_page (tk.Frame): The currently displayed page of the GUI.
@@ -35,6 +36,7 @@ class App(tk.Tk):
 
         self.db = db
         self.active_user = ""
+        self.__active_user_balance = 0
 
         self.__twofa_pin = ""
 
@@ -67,6 +69,14 @@ class App(tk.Tk):
         pin = f"{random_digit()}{random_digit()}{random_digit()}{random_digit()}"
 
         self.__twofa_pin = pin
+
+    @property
+    def active_user_balance(self):
+        return self.__active_user_balance
+
+    @active_user_balance.setter
+    def active_user_balance(self, amount):
+        self.__active_user_balance = int(amount)
 
     @property
     def twofa_pin(self):
