@@ -3,8 +3,6 @@ from random import randint
 
 import colors
 from db.database import Database
-from pages import name_to_page
-from windows import name_to_window
 from utils import widgets
 
 
@@ -50,12 +48,12 @@ class App(tk.Tk):
         """Changes the currently active page of the GUI."""
         self.__active_page.destroy()
 
-        Page = name_to_page[page_name]
+        Page = widgets.get_page(page_name)
         self.__active_page = Page(self.__container, self)
 
     def show_window(self, window_name):
         """Shows the toplevel window specified by the Window object."""
-        Window = name_to_window[window_name]
+        Window = widgets.get_window(window_name)
         Window(self)
 
     def generate_twofa_pin(self):

@@ -75,8 +75,4 @@ class TwoFAWindow(tk.Toplevel):
         return False
 
 
-__window_list = [
-    TwoFAWindow
-]
-
-name_to_window = {cls.__name__: cls for cls in __window_list}
+window_list = [TwoFAWindow]

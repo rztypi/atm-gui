@@ -234,7 +234,7 @@ class RegisterPage(tk.Frame):
             text="Register",
             font=fonts.boldMainFont2,
             command=lambda: self.register_button_click(
-                user_entry, pass_entry, phone_entry
+                user_entry, pass_entry, phone_entry, app
             ),
         )
         register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
@@ -377,12 +377,4 @@ class LoginPage(tk.Frame):
         app.show_window("TwoFAWindow")
 
 
-__page_list = [
-    LoginPage,
-    RegisterPage,
-    HomePage,
-    WithdrawPage,
-    WithdrawCompletePage
-]
-
-name_to_page = {cls.__name__: cls for cls in __page_list}
+page_list = [LoginPage, RegisterPage, HomePage, WithdrawPage, WithdrawCompletePage]
