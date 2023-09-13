@@ -65,7 +65,7 @@ class Database:
             cursor.execute(
                 """
                 INSERT INTO accounts VALUES
-                    (?, ?, ?)
+                    (?, ?, ?, 0)
                 """,
                 (username, password, phone_number),
             )
