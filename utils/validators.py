@@ -1,7 +1,7 @@
 from tkinter import messagebox
 
 
-def __username_is_valid(username):
+def username_is_valid(username):
     """Checks if username is not empty. Shows a messagebox if invalid."""
     if username:
         return True
@@ -11,7 +11,7 @@ def __username_is_valid(username):
         )
         return False
 
-def __password_is_valid(password):
+def password_is_valid(password):
     """Checks if password is not empty. Shows a messagebox if invalid."""
     if password:
         return True
@@ -21,7 +21,7 @@ def __password_is_valid(password):
         )
         return False
 
-def __phone_number_is_valid(phone_number):
+def phone_number_is_valid(phone_number):
     """Checks if phone_number has a length of 13. Shows a messagebox if invalid."""
     if len(phone_number) == 13:
         return True
@@ -31,13 +31,43 @@ def __phone_number_is_valid(phone_number):
         )
         return False
 
+def amount_is_valid(amount):
+    """Checks if amount is not empty. Shows a messagebox if invalid."""
+    if amount:
+        return True
+    else:
+        messagebox.showerror(
+            "Form Error", "Amount field must not be empty."
+        )
+        return False
+
+
+def withdraw_is_valid(withdraw_amount, balance):
+    """Checks if withdraw_amount is less than or equal to balance."""
+    if withdraw_amount <= balance:
+        return True
+    else:
+        messagebox.showerror(
+            "Withdraw Error", f"Insufficient balance. (₱{balance:,})"
+        )
+
+def deposit_is_valid(deposit_amount, balance):
+    """Checks if deposit_amount + balance does not exceed the account limit."""
+    LIMIT = 100_000_000
+    if deposit_amount + balance <= LIMIT:
+        return True
+    else:
+        messagebox.showerror(
+            "Deposit Error", f"Balance exceeds the limit of ₱{LIMIT:,}."
+        )
+
 
 __field_to_checker_func = {
-    "username": __username_is_valid,
-    "password": __password_is_valid,
-    "phone_number": __phone_number_is_valid,
+    "username": username_is_valid,
+    "password": password_is_valid,
+    "phone_number": phone_number_is_valid,
+    "amount": amount_is_valid,
 }
-
 
 def form_is_valid(**kwargs):
     """Checks if field values specified are valid.
