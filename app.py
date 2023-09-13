@@ -37,7 +37,9 @@ class App(tk.Tk):
         self.active_user = ""
 
         self.__twofa_pin = ""
+
         self.__last_withdraw_amount = 0
+        self.__last_deposit_amount = 0
 
         self.__container = tk.Frame(self, bg=colors.secondary)
         self.__container.place(relwidth=1, relheight=1)
@@ -77,6 +79,14 @@ class App(tk.Tk):
     @last_withdraw_amount.setter
     def last_withdraw_amount(self, amount):
         self.__last_withdraw_amount = int(amount)
+    
+    @property
+    def last_deposit_amount(self):
+        return self.__last_deposit_amount
+    
+    @last_deposit_amount.setter
+    def last_deposit_amount(self, amount):
+        self.__last_deposit_amount = int(amount)
 
 
 if __name__ == "__main__":

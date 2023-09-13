@@ -7,7 +7,7 @@ from utils import widgets
 from utils.validators import form_is_valid
 
 
-SKIP_TWOFA = False
+SKIP_TWOFA = True
 
 
 class LoginPage(tk.Frame):
@@ -252,13 +252,21 @@ class HomePage(tk.Frame):
         )
         withdraw_button.place(relx=0.3, rely=0.55, relheight=0.08, relwidth=0.4)
 
+        deposit_button = tk.Button(
+            self,
+            text="Deposit",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_page_to("DepositPage"),
+        )
+        deposit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
+
         exit_button = tk.Button(
             self,
             text="Exit",
             font=fonts.boldMainFont,
             command=lambda: app.change_page_to("LoginPage"),
         )
-        exit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
+        exit_button.place(relx=0.3, rely=0.85, relheight=0.08, relwidth=0.4)
 
 
 class WithdrawPage(tk.Frame):
@@ -377,4 +385,128 @@ class WithdrawCompletePage(tk.Frame):
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
 
 
-page_list = [LoginPage, RegisterPage, HomePage, WithdrawPage, WithdrawCompletePage]
+class DepositPage(tk.Frame):
+    def __init__(self, parent, app):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+
+        window_label = tk.Label(
+            self,
+            text="Cash Deposit",
+            bg="black",
+            fg="white",
+            font=fonts.biggerFontBold,
+        )
+        window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        window_desc = tk.Label(
+            self,
+            text="Enter deposit amount:",
+            bg="black",
+            fg="#bababa",
+            font=fonts.mainFont,
+        )
+        window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
+
+        vcmd = (self.register(self.__deposit_entry_validator), "%i", "%P", "%S")
+        deposit_entry = tk.Entry(
+            self, validate="key", validatecommand=vcmd, font=fonts.biggestFontBold
+        )
+        deposit_entry.bind("<Key>", self.__move_icursor_to_end)
+        deposit_entry.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
+
+        deposit_button = tk.Button(
+            self,
+            text="Deposit",
+            font=fonts.boldMainFont,
+            command=lambda: self.deposit_button_click(deposit_entry, app),
+        )
+        deposit_button.place(relx=0.4, rely=0.65, relheight=0.08, relwidth=0.2)
+
+        back_button = tk.Button(
+            self,
+            text="Back",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_page_to("HomePage"),
+        )
+        back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
+
+    def deposit_button_click(self, deposit_entry, app):
+        deposit_amount = deposit_entry.get()
+        if deposit_amount:
+            app.last_deposit_amount = int(deposit_amount)
+
+            app.change_page_to("DepositCompletePage")
+        else:
+            tk.messagebox.showerror("Deposit Error", "Field must not be empty.")
+
+    def __deposit_entry_validator(self, index, entry, input_text):
+        input_is_many = len(input_text) > 1
+        first_char_is_zero = (index == "0" and input_text == "0") or entry[:1] == "0"
+        if input_is_many or first_char_is_zero:
+            return False
+
+        return input_text.isdigit()
+
+    def __move_icursor_to_end(self, event):
+        event.widget.icursor(tk.END)
+
+
+class DepositCompletePage(tk.Frame):
+    def __init__(self, parent, app):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+
+        window_label = tk.Label(
+            self,
+            text="Cash Deposit",
+            bg="black",
+            fg="white",
+            font=fonts.biggerFontBold,
+        )
+        window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        window_desc = tk.Label(
+            self,
+            text="You have successfully deposited:",
+            bg="black",
+            fg="#bababa",
+            font=fonts.mainFont,
+        )
+        window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
+
+        deposit_amount_label = tk.Label(
+            self,
+            text=f"₱{app.last_deposit_amount:,}",
+            bg="black",
+            fg="#bababa",
+            font=fonts.bigFontBold,
+        )
+        deposit_amount_label.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
+
+        new_button = tk.Button(
+            self,
+            text="New Transaction",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_page_to("HomePage"),
+        )
+        new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
+
+        exit_button = tk.Button(
+            self,
+            text="Exit",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_page_to("LoginPage"),
+        )
+        exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
+
+
+page_list = [
+    LoginPage,
+    RegisterPage,
+    HomePage,
+    WithdrawPage,
+    WithdrawCompletePage,
+    DepositPage,
+    DepositCompletePage
+]
