@@ -248,7 +248,7 @@ class HomePage(tk.Frame):
             font=fonts.boldMainFont,
             command=lambda: app.change_page_to("WithdrawPage"),
         )
-        withdraw_button.place(relx=0.3, rely=0.55, relheight=0.08, relwidth=0.4)
+        withdraw_button.place(relx=0.1, rely=0.55, relheight=0.08, relwidth=0.35)
 
         deposit_button = tk.Button(
             self,
@@ -256,7 +256,15 @@ class HomePage(tk.Frame):
             font=fonts.boldMainFont,
             command=lambda: app.change_page_to("DepositPage"),
         )
-        deposit_button.place(relx=0.3, rely=0.70, relheight=0.08, relwidth=0.4)
+        deposit_button.place(relx=0.55, rely=0.55, relheight=0.08, relwidth=0.35)
+
+        inquiry_button = tk.Button(
+            self,
+            text="Inquiry",
+            font=fonts.boldMainFont,
+            command=self.bell,
+        )
+        inquiry_button.place(relx=0.1, rely=0.7, relheight=0.08, relwidth=0.35)
 
         exit_button = tk.Button(
             self,
@@ -264,7 +272,7 @@ class HomePage(tk.Frame):
             font=fonts.boldMainFont,
             command=lambda: app.change_page_to("LoginPage"),
         )
-        exit_button.place(relx=0.3, rely=0.85, relheight=0.08, relwidth=0.4)
+        exit_button.place(relx=0.55, rely=0.7, relheight=0.08, relwidth=0.35)
 
 
 class WithdrawPage(tk.Frame):
