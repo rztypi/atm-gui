@@ -97,4 +97,6 @@ class Database:
 
         balance = cursor.fetchone()[0]
 
+        cursor.close()
+
         return balance
