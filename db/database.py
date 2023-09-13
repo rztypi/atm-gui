@@ -79,3 +79,22 @@ class Database:
         cursor.close()
 
         return register_status
+    
+    def get_account_balance(self, username):
+        """Get the account balance of the given username.
+
+        Parameters:
+            username (str): The username of the account.
+        
+        Returns:
+            int: The current balance of the account.
+        """
+        cursor = self.conn.cursor()
+
+        cursor.execute(
+            "SELECT balance FROM accounts WHERE username=?", (username,)
+        )
+
+        balance = cursor.fetchone()[0]
+
+        return balance

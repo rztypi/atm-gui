@@ -85,6 +85,7 @@ class LoginPage(tk.Frame):
         if form_is_valid(username=username, password=password):
             if app.db.login_account(username, password):
                 app.active_user = username
+                app.active_user_balance = app.db.get_account_balance(username)
 
                 if SKIP_TWOFA:
                     app.change_page_to("HomePage")
