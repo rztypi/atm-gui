@@ -4,10 +4,10 @@ from tkinter import messagebox
 import fonts
 import colors
 from utils import widgets
-from utils.validators import form_is_valid
+from utils.validators import form_is_valid, withdraw_is_valid, deposit_is_valid
 
 
-SKIP_TWOFA = False
+SKIP_TWOFA = True
 
 
 class LoginPage(tk.Frame):
@@ -290,7 +290,7 @@ class WithdrawPage(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        vcmd = (self.register(self.__withdraw_entry_validator), "%i", "%P", "%S")
+        vcmd = (self.register(self.__withdraw_entry_validator), "%P", "%S")
         withdraw_entry = tk.Entry(
             self, validate="key", validatecommand=vcmd, font=fonts.biggestFontBold
         )
@@ -315,17 +315,20 @@ class WithdrawPage(tk.Frame):
 
     def withdraw_button_click(self, withdraw_entry, app):
         withdraw_amount = withdraw_entry.get()
-        if withdraw_amount:
-            app.last_withdraw_amount = int(withdraw_amount)
+        widgets.clear_entry_field(withdraw_entry)
 
-            app.change_page_to("WithdrawCompletePage")
-        else:
-            tk.messagebox.showerror("Withdraw Error", "Field must not be empty.")
+        if form_is_valid(amount=withdraw_amount):
+            withdraw_amount = int(withdraw_amount)
 
-    def __withdraw_entry_validator(self, index, entry, input_text):
-        input_is_many = len(input_text) > 1
-        first_char_is_zero = (index == "0" and input_text == "0") or entry[:1] == "0"
-        if input_is_many or first_char_is_zero:
+            if withdraw_is_valid(withdraw_amount, app.active_user_balance):
+                app.last_withdraw_amount = withdraw_amount
+                app.active_user_balance -= withdraw_amount
+
+                app.change_page_to("WithdrawCompletePage")
+
+    def __withdraw_entry_validator(self, entry, input_text):
+        first_char_is_zero = entry[:1] == "0"
+        if first_char_is_zero:
             return False
 
         return input_text.isdigit()
@@ -406,7 +409,7 @@ class DepositPage(tk.Frame):
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
-        vcmd = (self.register(self.__deposit_entry_validator), "%i", "%P", "%S")
+        vcmd = (self.register(self.__deposit_entry_validator), "%P", "%S")
         deposit_entry = tk.Entry(
             self, validate="key", validatecommand=vcmd, font=fonts.biggestFontBold
         )
@@ -431,17 +434,20 @@ class DepositPage(tk.Frame):
 
     def deposit_button_click(self, deposit_entry, app):
         deposit_amount = deposit_entry.get()
-        if deposit_amount:
-            app.last_deposit_amount = int(deposit_amount)
+        widgets.clear_entry_field(deposit_entry)
 
-            app.change_page_to("DepositCompletePage")
-        else:
-            tk.messagebox.showerror("Deposit Error", "Field must not be empty.")
+        if form_is_valid(amount=deposit_amount):
+            deposit_amount = int(deposit_amount)
 
-    def __deposit_entry_validator(self, index, entry, input_text):
-        input_is_many = len(input_text) > 1
-        first_char_is_zero = (index == "0" and input_text == "0") or entry[:1] == "0"
-        if input_is_many or first_char_is_zero:
+            if deposit_is_valid(deposit_amount, app.active_user_balance):
+                app.last_deposit_amount = deposit_amount
+                app.active_user_balance += deposit_amount
+
+                app.change_page_to("DepositCompletePage")
+
+    def __deposit_entry_validator(self, entry, input_text):
+        first_char_is_zero = entry[:1] == "0"
+        if first_char_is_zero:
             return False
 
         return input_text.isdigit()
