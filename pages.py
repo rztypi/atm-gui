@@ -295,7 +295,7 @@ class WithdrawPage(tk.Frame):
             self,
             text="Withdraw",
             font=fonts.boldMainFont,
-            command=lambda: self.withdraw_button_handler(withdraw_entry, app),
+            command=lambda: self.withdraw_button_click(withdraw_entry, app),
         )
         withdraw_button.place(relx=0.4, rely=0.65, relheight=0.08, relwidth=0.2)
 
@@ -307,7 +307,7 @@ class WithdrawPage(tk.Frame):
         )
         back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
 
-    def withdraw_button_handler(self, withdraw_entry, app):
+    def withdraw_button_click(self, withdraw_entry, app):
         withdraw_amount = withdraw_entry.get()
         if withdraw_amount:
             app.last_withdraw_amount = int(withdraw_amount)
