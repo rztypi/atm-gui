@@ -7,7 +7,7 @@ from utils import widgets
 from utils.validators import form_is_valid
 
 
-SKIP_TWOFA = True
+SKIP_TWOFA = False
 
 
 class LoginPage(tk.Frame):
@@ -90,14 +90,11 @@ class LoginPage(tk.Frame):
                 if SKIP_TWOFA:
                     app.change_page_to("HomePage")
                 else:
-                    self.__open_twofa_window(app)
+                    app.show_window("TwoFAWindow")
             else:
                 tk.messagebox.showerror(
                     "Login Error", "Username and password not found."
                 )
-
-    def __open_twofa_window(self, app):
-        app.show_window("TwoFAWindow")
 
 
 class RegisterPage(tk.Frame):
