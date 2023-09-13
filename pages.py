@@ -332,6 +332,8 @@ class WithdrawPage(tk.Frame):
                 app.last_withdraw_amount = withdraw_amount
                 app.active_user_balance -= withdraw_amount
 
+                app.db.set_account_balance(app.active_user, app.active_user_balance)
+
                 app.change_page_to("WithdrawCompletePage")
 
     def __withdraw_entry_validator(self, entry, input_text):
@@ -450,6 +452,8 @@ class DepositPage(tk.Frame):
             if deposit_is_valid(deposit_amount, app.active_user_balance):
                 app.last_deposit_amount = deposit_amount
                 app.active_user_balance += deposit_amount
+
+                app.db.set_account_balance(app.active_user, app.active_user_balance)
 
                 app.change_page_to("DepositCompletePage")
 
