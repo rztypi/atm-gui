@@ -262,7 +262,7 @@ class HomePage(tk.Frame):
             self,
             text="Inquiry",
             font=fonts.boldMainFont,
-            command=self.bell,
+            command=lambda: app.change_page_to("InquiryPage"),
         )
         inquiry_button.place(relx=0.1, rely=0.7, relheight=0.08, relwidth=0.35)
 
@@ -513,6 +513,55 @@ class DepositCompletePage(tk.Frame):
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
 
 
+class InquiryPage(tk.Frame):
+    def __init__(self, parent, app):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
+
+        window_label = tk.Label(
+            self,
+            text="Balance Inquiry",
+            bg="black",
+            fg="white",
+            font=fonts.biggerFontBold,
+        )
+        window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
+
+        window_desc = tk.Label(
+            self,
+            text="Your current balance is:",
+            bg="black",
+            fg="#bababa",
+            font=fonts.mainFont,
+        )
+        window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
+
+        balance_label = tk.Label(
+            self,
+            text=f"₱{app.active_user_balance:,}",
+            bg="black",
+            fg="#bababa",
+            font=fonts.bigFontBold,
+        )
+        balance_label.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
+
+        new_button = tk.Button(
+            self,
+            text="New Transaction",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_page_to("HomePage"),
+        )
+        new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
+
+        exit_button = tk.Button(
+            self,
+            text="Exit",
+            font=fonts.boldMainFont,
+            command=lambda: app.change_page_to("LoginPage"),
+        )
+        exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
+
+
 page_list = [
     LoginPage,
     RegisterPage,
@@ -520,5 +569,6 @@ page_list = [
     WithdrawPage,
     WithdrawCompletePage,
     DepositPage,
-    DepositCompletePage
+    DepositCompletePage,
+    InquiryPage,
 ]
