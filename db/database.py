@@ -31,7 +31,6 @@ class Database:
             bool: True if login is successful, False if not.
         """
         cursor = self.conn.cursor()
-
         cursor.execute(
             """
             SELECT username, password
@@ -90,7 +89,6 @@ class Database:
             int: The current balance of the account.
         """
         cursor = self.conn.cursor()
-
         cursor.execute("SELECT balance FROM accounts WHERE username = ?", (username,))
 
         balance = cursor.fetchone()[0]
@@ -107,7 +105,6 @@ class Database:
             balance (int): The new balance of the account.
         """
         cursor = self.conn.cursor()
-
         cursor.execute(
             """
             UPDATE accounts
@@ -116,5 +113,7 @@ class Database:
             """,
             (balance, username),
         )
+
+        self.conn.commit()
 
         cursor.close()
