@@ -1,7 +1,7 @@
 from tkinter import messagebox
 
 
-def username_is_valid(username):
+def __username_is_valid(username):
     """Checks if username is not empty. Shows a messagebox if invalid."""
     if username:
         return True
@@ -11,7 +11,7 @@ def username_is_valid(username):
         )
         return False
 
-def password_is_valid(password):
+def __password_is_valid(password):
     """Checks if password is not empty. Shows a messagebox if invalid."""
     if password:
         return True
@@ -21,7 +21,7 @@ def password_is_valid(password):
         )
         return False
 
-def phone_number_is_valid(phone_number):
+def __phone_number_is_valid(phone_number):
     """Checks if phone_number has a length of 13. Shows a messagebox if invalid."""
     if len(phone_number) == 13:
         return True
@@ -33,9 +33,9 @@ def phone_number_is_valid(phone_number):
 
 
 __field_to_checker_func = {
-    "username": username_is_valid,
-    "password": password_is_valid,
-    "phone_number": phone_number_is_valid,
+    "username": __username_is_valid,
+    "password": __password_is_valid,
+    "phone_number": __phone_number_is_valid,
 }
 
 
