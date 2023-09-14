@@ -1,6 +1,9 @@
 import sqlite3
 
 
+DB_PATH = "db/test.db"
+
+
 class Database:
     """A class for handling the app's database-related functions.
 
@@ -8,13 +11,13 @@ class Database:
         conn (sqlite3.Connection): The database connection.
     """
 
-    def __init__(self, db_path):
+    def __init__(self):
         """Initializes a database connection to db_path.
 
         Parameters:
             db_path (str): The path of the database.
         """
-        self.conn = sqlite3.connect(db_path)
+        self.conn = sqlite3.connect(DB_PATH)
 
     def close(self):
         """Closes the database connection."""

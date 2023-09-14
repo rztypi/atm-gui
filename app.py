@@ -6,9 +6,6 @@ from db.database import Database
 from utils import widgets
 
 
-DB_PATH = "db/test.db"
-
-
 class App(tk.Tk):
     """The root Tk window of the GUI.
 
@@ -30,20 +27,19 @@ class App(tk.Tk):
         """
         tk.Tk.__init__(self)
         self.title("ATM System")
-        self["background"] = "white"
 
-        widgets.set_window_geometry(self, x=720, y=720)
+        widgets.set_window_geometry(self, x=600, y=600)
 
         self.db = db
-        self.active_user = ""
-        self.__active_user_balance = 0
+        self.active_user = "username"
+        self.__active_user_balance = self.db.get_account_balance(self.active_user)
 
         self.__twofa_pin = ""
 
         self.__last_withdraw_amount = 0
         self.__last_deposit_amount = 0
 
-        self.__container = tk.Frame(self, bg=colors.secondary)
+        self.__container = tk.Frame(self, bg=colors.primary)
         self.__container.place(relwidth=1, relheight=1)
         self.__active_page = tk.Frame()
         self.change_page_to("LoginPage")
@@ -100,7 +96,7 @@ class App(tk.Tk):
 
 
 if __name__ == "__main__":
-    db = Database(DB_PATH)
+    db = Database()
     app = App(db)
     app.mainloop()
     db.close()
