@@ -43,4 +43,4 @@ SKIP_TWOFA = True
 
 
 [^1]: This project was created as a requirement to our Software Design class.
-[^2]: A Twilio trial account was used previously for academic submission purposes. PIN is printed to the terminal.
+[^2]: A Twilio trial account was previously used for academic submission purposes. PIN is now printed to the terminal.
