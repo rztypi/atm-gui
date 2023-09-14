@@ -1,7 +1,7 @@
 import sqlite3
 
 
-DB_PATH = "db/test.db"
+DB_PATH = "db/prod.db"
 
 
 class Database:
