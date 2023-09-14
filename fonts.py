@@ -10,4 +10,4 @@ sMainFont2 = (font_name, 8)
 
 bigFontBold = (font_name, 20, 'bold')
 biggerFontBold = (font_name, 24, 'bold')
-biggestFontBold = (font_name, 50, 'bold')
+biggestFontBold = (font_name, 40, 'bold')

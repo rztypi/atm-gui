@@ -1,3 +1,6 @@
-primary = '#343434'
-secondary = '#c3c3c3'
-font_primary = '#e3e3e3'
+primary = "#495054"
+secondary = "#bccad0"
+font_primary = "#e3e8ea"
+font_secondary = "#9ba8ae"
+white = "white"
+black = "black"

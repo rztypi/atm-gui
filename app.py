@@ -42,6 +42,7 @@ class App(tk.Tk):
         self.__container = tk.Frame(self, bg=colors.primary)
         self.__container.place(relwidth=1, relheight=1)
         self.__active_page = tk.Frame()
+
         self.change_page_to("LoginPage")
 
     def change_page_to(self, page_name):

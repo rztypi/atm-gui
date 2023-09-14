@@ -53,16 +53,18 @@ class LoginPage(tk.Frame):
         login_button = tk.Button(
             self,
             text="Login",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.boldMainFont,
             command=lambda: self.authenticate_login(user_entry, pass_entry, app),
         )
-        login_button.place(relx=0.4, rely=0.47, relheight=0.08, relwidth=0.2)
+        login_button.place(relx=0.35, rely=0.47, relheight=0.08, relwidth=0.3)
 
         register_label = tk.Label(
             self,
             text="Don't have an account?",
             bg=colors.primary,
-            fg="#bababa",
+            fg=colors.font_secondary,
             font=fonts.sMainFont,
         )
         register_label.place(relx=0.1, rely=0.82, relheight=0.02, relwidth=0.8)
@@ -70,10 +72,12 @@ class LoginPage(tk.Frame):
         register_button = tk.Button(
             self,
             text="Register",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.boldMainFont,
             command=lambda: app.change_page_to("RegisterPage"),
         )
-        register_button.place(relx=0.4, rely=0.85, relheight=0.08, relwidth=0.2)
+        register_button.place(relx=0.35, rely=0.85, relheight=0.08, relwidth=0.3)
 
     def authenticate_login(self, user_entry, pass_entry, app):
         username = user_entry.get()
@@ -99,14 +103,14 @@ class LoginPage(tk.Frame):
 
 class RegisterPage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
             self,
             text="Registration Form",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.bigFontBold,
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
@@ -114,8 +118,8 @@ class RegisterPage(tk.Frame):
         user_label = tk.Label(
             self,
             text="User Name: ",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             anchor=tk.W,
             font=fonts.boldMainFont2,
         )
@@ -124,8 +128,8 @@ class RegisterPage(tk.Frame):
         pass_label = tk.Label(
             self,
             text="Password: ",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             anchor=tk.W,
             font=fonts.boldMainFont2,
         )
@@ -134,8 +138,8 @@ class RegisterPage(tk.Frame):
         phone_label = tk.Label(
             self,
             text="Phone Number: ",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             anchor=tk.W,
             font=fonts.boldMainFont2,
         )
@@ -157,8 +161,8 @@ class RegisterPage(tk.Frame):
         phone_ghostlabel = tk.Label(
             self,
             text="Format: +63**********",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_secondary,
             anchor=tk.W,
             font=fonts.sMainFont2,
         )
@@ -167,20 +171,24 @@ class RegisterPage(tk.Frame):
         register_button = tk.Button(
             self,
             text="Register",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.boldMainFont2,
             command=lambda: self.register_button_click(
                 user_entry, pass_entry, phone_entry, app
             ),
         )
-        register_button.place(relx=0.4, rely=0.63, relheight=0.08, relwidth=0.2)
+        register_button.place(relx=0.35, rely=0.63, relheight=0.08, relwidth=0.3)
 
         back_button = tk.Button(
             self,
             text="Back",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("LoginPage"),
         )
-        back_button.place(relx=0.4, rely=0.8, relheight=0.08, relwidth=0.2)
+        back_button.place(relx=0.35, rely=0.8, relheight=0.08, relwidth=0.3)
 
     def register_button_click(self, user_entry, pass_entry, phone_entry, app):
         username = user_entry.get()
@@ -193,9 +201,17 @@ class RegisterPage(tk.Frame):
             phone_number=phone_number,
         ):
             if app.db.register_account(username, password, phone_number):
-                print("Registration success!")
+                tk.messagebox.showinfo(
+                    "Registration", "Registration successful."
+                )
             else:
-                print("Registration failed.")
+                tk.messagebox.showerror(
+                    "Registration Error", "Username is already taken."
+                )
+            
+            widgets.clear_entry_field(user_entry)
+            widgets.clear_entry_field(pass_entry)
+            widgets.clear_entry_field(phone_entry, start=3)
 
     @staticmethod
     def __user_check(username):
@@ -225,19 +241,22 @@ class RegisterPage(tk.Frame):
 
 class HomePage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
-            self, text="ATM System", bg="black", fg="white", font=fonts.biggerFontBold
+            self, text="ATM System",
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.biggerFontBold
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
 
         window_desc = tk.Label(
             self,
             text="Choose your transaction.",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.mainFont,
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
@@ -245,7 +264,9 @@ class HomePage(tk.Frame):
         withdraw_button = tk.Button(
             self,
             text="Withdraw",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("WithdrawPage"),
         )
         withdraw_button.place(relx=0.1, rely=0.55, relheight=0.08, relwidth=0.35)
@@ -253,7 +274,9 @@ class HomePage(tk.Frame):
         deposit_button = tk.Button(
             self,
             text="Deposit",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("DepositPage"),
         )
         deposit_button.place(relx=0.55, rely=0.55, relheight=0.08, relwidth=0.35)
@@ -261,7 +284,9 @@ class HomePage(tk.Frame):
         inquiry_button = tk.Button(
             self,
             text="Inquiry",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("InquiryPage"),
         )
         inquiry_button.place(relx=0.1, rely=0.7, relheight=0.08, relwidth=0.35)
@@ -269,7 +294,9 @@ class HomePage(tk.Frame):
         exit_button = tk.Button(
             self,
             text="Exit",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("LoginPage"),
         )
         exit_button.place(relx=0.55, rely=0.7, relheight=0.08, relwidth=0.35)
@@ -277,14 +304,14 @@ class HomePage(tk.Frame):
 
 class WithdrawPage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
             self,
             text="Cash Withdrawal",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.biggerFontBold,
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
@@ -292,8 +319,8 @@ class WithdrawPage(tk.Frame):
         window_desc = tk.Label(
             self,
             text="Enter withdraw amount:",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.mainFont,
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
@@ -308,18 +335,22 @@ class WithdrawPage(tk.Frame):
         withdraw_button = tk.Button(
             self,
             text="Withdraw",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: self.withdraw_button_click(withdraw_entry, app),
         )
-        withdraw_button.place(relx=0.4, rely=0.65, relheight=0.08, relwidth=0.2)
+        withdraw_button.place(relx=0.35, rely=0.65, relheight=0.08, relwidth=0.3)
 
         back_button = tk.Button(
             self,
             text="Back",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("HomePage"),
         )
-        back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
+        back_button.place(relx=0.35, rely=0.80, relheight=0.08, relwidth=0.3)
 
     def withdraw_button_click(self, withdraw_entry, app):
         withdraw_amount = withdraw_entry.get()
@@ -349,14 +380,14 @@ class WithdrawPage(tk.Frame):
 
 class WithdrawCompletePage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
             self,
             text="Cash Withdrawal",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.biggerFontBold,
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
@@ -364,17 +395,17 @@ class WithdrawCompletePage(tk.Frame):
         window_desc = tk.Label(
             self,
             text="You have successfully withdrawn:",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_secondary,
             font=fonts.mainFont,
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
         withdraw_amount_label = tk.Label(
             self,
-            text=f"₱{app.last_withdraw_amount:,}",
-            bg="black",
-            fg="#bababa",
+            text=f"₱{app.last_withdraw_amount:,.2f}",
+            bg=colors.white,
+            fg=colors.black,
             font=fonts.bigFontBold,
         )
         withdraw_amount_label.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
@@ -382,7 +413,9 @@ class WithdrawCompletePage(tk.Frame):
         new_button = tk.Button(
             self,
             text="New Transaction",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("HomePage"),
         )
         new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
@@ -390,7 +423,9 @@ class WithdrawCompletePage(tk.Frame):
         exit_button = tk.Button(
             self,
             text="Exit",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("LoginPage"),
         )
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
@@ -398,14 +433,14 @@ class WithdrawCompletePage(tk.Frame):
 
 class DepositPage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
             self,
             text="Cash Deposit",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.biggerFontBold,
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
@@ -413,8 +448,8 @@ class DepositPage(tk.Frame):
         window_desc = tk.Label(
             self,
             text="Enter deposit amount:",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.mainFont,
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
@@ -429,18 +464,22 @@ class DepositPage(tk.Frame):
         deposit_button = tk.Button(
             self,
             text="Deposit",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: self.deposit_button_click(deposit_entry, app),
         )
-        deposit_button.place(relx=0.4, rely=0.65, relheight=0.08, relwidth=0.2)
+        deposit_button.place(relx=0.35, rely=0.65, relheight=0.08, relwidth=0.3)
 
         back_button = tk.Button(
             self,
             text="Back",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("HomePage"),
         )
-        back_button.place(relx=0.4, rely=0.80, relheight=0.08, relwidth=0.2)
+        back_button.place(relx=0.35, rely=0.80, relheight=0.08, relwidth=0.3)
 
     def deposit_button_click(self, deposit_entry, app):
         deposit_amount = deposit_entry.get()
@@ -470,14 +509,14 @@ class DepositPage(tk.Frame):
 
 class DepositCompletePage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
             self,
             text="Cash Deposit",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.biggerFontBold,
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
@@ -485,17 +524,17 @@ class DepositCompletePage(tk.Frame):
         window_desc = tk.Label(
             self,
             text="You have successfully deposited:",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_secondary,
             font=fonts.mainFont,
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
         deposit_amount_label = tk.Label(
             self,
-            text=f"₱{app.last_deposit_amount:,}",
-            bg="black",
-            fg="#bababa",
+            text=f"₱{app.last_deposit_amount:,.2f}",
+            bg=colors.white,
+            fg=colors.black,
             font=fonts.bigFontBold,
         )
         deposit_amount_label.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
@@ -503,7 +542,9 @@ class DepositCompletePage(tk.Frame):
         new_button = tk.Button(
             self,
             text="New Transaction",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("HomePage"),
         )
         new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
@@ -511,7 +552,9 @@ class DepositCompletePage(tk.Frame):
         exit_button = tk.Button(
             self,
             text="Exit",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("LoginPage"),
         )
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
@@ -519,14 +562,14 @@ class DepositCompletePage(tk.Frame):
 
 class InquiryPage(tk.Frame):
     def __init__(self, parent, app):
-        tk.Frame.__init__(self, parent, bg="black")
+        tk.Frame.__init__(self, parent, bg=colors.primary)
         self.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=0.8)
 
         window_label = tk.Label(
             self,
             text="Balance Inquiry",
-            bg="black",
-            fg="white",
+            bg=colors.primary,
+            fg=colors.font_primary,
             font=fonts.biggerFontBold,
         )
         window_label.place(relx=0.1, rely=0.02, relheight=0.1, relwidth=0.8)
@@ -534,17 +577,17 @@ class InquiryPage(tk.Frame):
         window_desc = tk.Label(
             self,
             text="Your current balance is:",
-            bg="black",
-            fg="#bababa",
+            bg=colors.primary,
+            fg=colors.font_secondary,
             font=fonts.mainFont,
         )
         window_desc.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
 
         balance_label = tk.Label(
             self,
-            text=f"₱{app.active_user_balance:,}",
-            bg="black",
-            fg="#bababa",
+            text=f"₱{app.active_user_balance:,.2f}",
+            bg=colors.white,
+            fg=colors.black,
             font=fonts.bigFontBold,
         )
         balance_label.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
@@ -552,7 +595,9 @@ class InquiryPage(tk.Frame):
         new_button = tk.Button(
             self,
             text="New Transaction",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("HomePage"),
         )
         new_button.place(relx=0.3, rely=0.65, relheight=0.08, relwidth=0.4)
@@ -560,7 +605,9 @@ class InquiryPage(tk.Frame):
         exit_button = tk.Button(
             self,
             text="Exit",
-            font=fonts.boldMainFont,
+            bg=colors.primary,
+            fg=colors.font_primary,
+            font=fonts.boldMainFont2,
             command=lambda: app.change_page_to("LoginPage"),
         )
         exit_button.place(relx=0.3, rely=0.80, relheight=0.08, relwidth=0.4)
