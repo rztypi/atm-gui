@@ -27,6 +27,6 @@ def set_window_geometry(window, x, y):
     window.geometry(geometry_string)
 
 
-def clear_entry_field(entry_field):
+def clear_entry_field(entry_field, start=0):
     """Clear the contents of the given tk.Entry field."""
-    entry_field.delete(0, tk.END)
+    entry_field.delete(start, tk.END)
