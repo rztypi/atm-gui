@@ -49,3 +49,7 @@ venv.bak/
 
 # Legacy code
 legacy/
+
+# Test database
+testdb.py
+test.db
