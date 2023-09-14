@@ -7,7 +7,7 @@ from utils import widgets
 from utils.validators import form_is_valid, withdraw_is_valid, deposit_is_valid
 
 
-SKIP_TWOFA = True
+SKIP_TWOFA = False
 
 
 class LoginPage(tk.Frame):
