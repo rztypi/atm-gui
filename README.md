@@ -2,7 +2,7 @@
 
 ![atm-gui](https://github.com/rztypi/atm-gui/assets/84902994/52a43198-4d13-45b4-948f-3b9ae98c65ae)
 
-A simple ATM interface using Ttkinter.[^1]
+A simple ATM interface using Tkinter.[^1]
 
 **Features:**
 
@@ -13,7 +13,7 @@ A simple ATM interface using Ttkinter.[^1]
 
 ## Setup
 
-*Make sure you have the latest version of [Python 3](https://www.python.org/downloads/) installed.*
+> *Note: Make sure you have the latest version of [Python 3](https://www.python.org/downloads/) installed.*
 
 1. Clone/download this repository.
     ```
