@@ -1,21 +1,39 @@
 from tkinter import messagebox
 
 
-def username_is_valid(username):
+def username_is_valid(username, is_registration=False):
     """Checks if username is not empty. Shows a messagebox if invalid."""
     if username:
-        return True
+        if not is_registration:
+            return True
+
+        if username.isalnum():
+            return True
+        else:
+            messagebox.showerror(
+                "Form Error", "Username must contain only letters and numbers."
+            )
+            return False
     else:
         messagebox.showerror(
             "Form Error", "Username field must not be blank."
         )
         return False
 
-def password_is_valid(password):
+def password_is_valid(password, is_registration=False):
     """Checks if password is not empty. Shows a messagebox if invalid."""
     if password:
-        return True
-    else:
+        if not is_registration:
+            return True
+
+        if len(password) >= 8:
+            return True
+        else:
+            messagebox.showerror(
+                "Form Error", "Password must have at least 8 characters."
+            )
+            return False
+    else: 
         messagebox.showerror(
             "Form Error", "Password field must not be blank."
         )
@@ -27,7 +45,7 @@ def phone_number_is_valid(phone_number):
         return True
     else:
         messagebox.showerror(
-            "Form Error", "Phone number field must have a length of 13."
+            "Form Error", "Phone number field must have 12 digits."
         )
         return False
 
@@ -85,7 +103,11 @@ def form_is_valid(**kwargs):
     for field, value in kwargs.items():
         is_valid = __field_to_checker_func[field]
 
-        if not is_valid(value):
+        if isinstance(value, str):
+            if not is_valid(value):
+                return False
+        else:
+            if not is_valid(value[0], value[1]):
                 return False
 
     return True

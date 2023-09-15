@@ -196,8 +196,8 @@ class RegisterPage(tk.Frame):
         phone_number = phone_entry.get()
 
         if form_is_valid(
-            username=username,
-            password=password,
+            username=(username, True),
+            password=(password, True),
             phone_number=phone_number,
         ):
             if app.db.register_account(username, password, phone_number):
